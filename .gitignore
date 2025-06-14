@@ -1,0 +1,3 @@
+quickmarks
+share/*
+!share/*.example

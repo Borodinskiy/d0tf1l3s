@@ -1,0 +1,3 @@
+nixo https://search.nixos.org/options?channel=unstable
+nixp https://search.nixos.org/packages?channel=unstable
+weblogin 192.168.1.1

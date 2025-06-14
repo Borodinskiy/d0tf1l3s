@@ -1,0 +1,31 @@
+#This is the base environment variables, that should be sourced to ~/.profile or/and ~/.zprofile file:
+
+export EDITOR='vim'
+export VISUAL='vim'
+
+# MSI Afterburner 2
+export MANGOHUD='1'
+export STEAM_EXTRA_COMPAT_TOOLS_PATHS="${cfgHome}/.steam/root/compatibilitytools.d"
+
+# Uniform open/save dialog for gtk apps if they have xdg desktop portal support
+export GTK_USE_PORTAL="1"
+
+# Where user store its documents, saves, etc.
+# By default its user's $HOME directory
+# To change value this variables should be defined before sourcing this file
+# Define it in ~/.profile file
+# Used for bookmarks and scripts
+export HOME_MYFILES="${HOME_MYFILES:-$HOME}"
+# Home of workspace directory. It store configuration, include nix's itself
+export HOME_WORKSPACE="${HOME_WORKSPACE:-$HOME_MYFILES/sync/workspace}"
+# Extra binaries locations
+export PATH="$HOME/.local/bin:$HOME_WORKSPACE/bin:$PATH"
+
+export QT_QPA_PLATFORMTHEME="kde"
+
+# Prioritize wayland for graphical toolkits
+export ELECTRON_OZONE_PLATFORM_HINT="auto"
+export CLUTTER_BACKEND="wayland"
+export GDK_BACKEND="wayland,x11"
+export QT_QPA_PLATFORM="wayland;xcb"
+export _JAVA_AWT_WM_NONREPARENTING="1"

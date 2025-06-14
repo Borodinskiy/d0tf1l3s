@@ -1,0 +1,7 @@
+ClientTransportPlugin obfs4 exec /usr/bin/obfs4
+UseBridges 1
+
+SocksPort 9050
+
+Bridge
+Bridge

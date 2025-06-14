@@ -1,0 +1,26 @@
+[manager]
+ratio=[2, 4, 2 ]
+sort_sensitive=true
+shot_hidden=true
+scrolloff=10
+
+[preview]
+wrap="yes"
+tab_size=4
+max_width=640
+max_height=480
+image_delay=99
+image_filter="nearest"
+
+[opener]
+play = [
+	{ run = 'mpv "$@"', orphan = true, for = "unix" },
+	{ run = 'mpv.exe %*', orphan = true, for = "windows" },
+]
+edit = [
+	{ run = '$EDITOR "$@"', block = true, for = "unix" },
+	{ run = '$EDITOR %*', block = true, for = "windows" },
+]
+open = [
+	{ run = 'xdg-open "$@"', for = "linux" },
+]

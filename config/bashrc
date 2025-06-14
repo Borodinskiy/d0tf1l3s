@@ -1,0 +1,104 @@
+# Commands below applied only for interactive shells
+[[ $- == *i* ]] || return
+
+HISTCONTROL="ignoreboth"
+HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/bash_history"
+HISTFILESIZE=1000
+HISTSIZE=100
+
+shopt -s autocd cdspell dirspell
+
+alias e="vim"
+alias se="sudo vim"
+
+# File manager
+f() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd" || true
+	fi
+	rm -f -- "$tmp"
+}
+
+alias tor='tor -f "$HOME_WORKSPACE/torrc"'
+alias wget-stream="yt-dlp --proxy=socks5://127.0.0.1:9051"
+
+# "Edit editor config"
+alias ee='f "$HOME_WORKSPACE/config/nvim"'
+# Edit workspace configs
+alias ewp='f "$HOME_WORKSPACE"'
+# Edit nixos configs
+alias enix='f "$HOME/dev/n1x0s"'
+
+# Apply some nix configuration
+alias os-boot='$HOME/dev/n1x0s/activate.sh boot $(hostname)'
+alias os-dry-build='$HOME/dev/n1x0s/activate.sh dry-build $(hostname)'
+alias os-switch='$HOME/dev/n1x0s/activate.sh switch $(hostname)'
+
+# So no configs for this thing
+alias ip="ip --color"
+alias df="df -h"
+alias free="free -h"
+
+# Faster ls
+alias l="ls"
+alias la="ls -a"
+alias ll="ls -l"
+alias lla="ls -la"
+alias lsa="ls -a"
+alias lh="ls -lh"
+alias lha="ls -lha"
+
+# Music shuffle
+musical() {
+	find "$HOME_MYFILES/music" -type f \
+	-not -iname "*.png" -not -iname "*.jpg" -not -iname "*.7z" \
+	-not -iname "*.bak" -not -wholename "*.stversions*" | sort -R > /tmp/songlist.txt
+	mpv --no-video --playlist=/tmp/songlist.txt
+}
+
+musical-chill() {
+	find "$HOME_MYFILES/music/ChillOut" -type f \
+	-not -iname "*.png" -not -iname "*.jpg" -not -iname "*.7z" \
+	-not -iname "*.bak" -not -wholename "*.stversions*" | sort -R > /tmp/songlist.txt
+	mpv --no-video --playlist=/tmp/songlist.txt
+}
+
+musicontinue() {
+	if [ ! -f "$HOME/songlist.txt" ]; then
+		if [ ! -f "/tmp/songlist.txt" ]; then
+			echo "No generated songlist. Try musical or musical-chill commands"
+			return
+		fi
+		cp "/tmp/songlist.txt" "$HOME/songlist.txt"
+	fi
+	mpv --no-video --playlist="$HOME/songlist.txt"
+}
+
+configure_prompt() {
+	local nc="\[\e[m\]" # reset color
+	local c="\[\e[0;37m\]" # white accent
+	local end="$"
+
+	# Chain of commands for root to do red accent
+	[ "$EUID" -eq 0 ] \
+		&& local c="\[\e[0;31m\]" \
+		&& local end="#"
+
+	PS1="\u$c@$nc\H$c:$nc\w\n$end "
+}
+
+precmd() {
+	# Print a newline before the prompt, unless it's the first displayed prompt
+	if [ "$__NEW_LINE_BEFORE_PROMPT" == "1" ]; then
+		echo ""
+	else
+		export __NEW_LINE_BEFORE_PROMPT=1
+	fi
+	#__git_ps1
+}
+export PROMPT_COMMAND="precmd"
+alias clear="export __NEW_LINE_BEFORE_PROMPT=0 && clear"
+
+configure_prompt

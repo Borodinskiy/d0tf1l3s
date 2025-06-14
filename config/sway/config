@@ -1,0 +1,430 @@
+# Because some configs ships by default with package manager
+include /etc/sway/config.d/*
+
+#
+#   THEME
+#
+
+set $font pango:Noto Sans 11
+
+set $cursor material_cursors
+set $cursorSize 32
+
+set $focusedBg #61538D
+set $focusedFg #1B1E20
+set $focusedIndicator #61538D
+
+set $focusedInactiveBg #363548
+set $focusedInactiveFg #ffffff
+set $focusedInactiveIndicator #ffffff
+
+set $unfocusedBg #1B1E20
+set $unfocusedFg #ffffff
+set $unfocusedIndicator #232627
+set $unfocusedChildBorder #363548
+
+default_border pixel 2
+hide_edge_borders smart
+smart_borders on
+title_align center
+titlebar_padding 4 1
+
+font $font
+seat * xcursor_theme $cursor $cursorSize
+
+#      class             border             bg                 fg                 indicator child_border
+client.focused           $focusedBg         $focusedBg         $focusedFg $focusedIndicator
+client.focused_tab_title $focusedBg         $focusedBg         $focusedFg
+client.focused_inactive  $focusedInactiveBg $focusedInactiveBg $focusedInactiveFg
+client.unfocused         $unfocusedBg       $unfocusedBg       $unfocusedFg
+
+#
+#   APPS
+#
+
+set $terminal    foot
+set $terminalCli foot
+
+set $fileManager dolphin
+
+set $browser   librewolf
+set $browserRF librewolf -P RF
+
+set $telegram   telegram-desktop
+
+set $calculator speedcrunch
+
+set $mountVault $terminalCli cryptomount
+set $closeVault $terminalCli cryptoclose
+
+set $volumemixer pavucontrol -t 3
+
+set $screenLock    swaylock -f
+set $displayToggle swaymsg output eDP-1 toggle
+set $scaleOne      swaymsg output DP-3 scale 1
+set $scaleTwo      swaymsg output DP-3 scale 1.5
+
+# wl-copy keeps clipboard items
+# even after program that was send buffer to it closes
+set $screenshotScreen grim - | wl-copy
+set $screenshotRegion grim -g "$(slurp)" - | wl-copy
+set $screenshotWindow grim -g "$(slurp)" - | wl-copy
+
+set $pickcolorHEX hyprpicker -f hex | wl-copy
+set $pickcolorRGB hyprpicker -f rgb | wl-copy
+
+set $brightnessUp   brightnessctl s 5%+
+set $brightnessDown brightnessctl s 5%-
+
+set $volumeDown pamixer -d 5
+set $volumeMute pamixer -t
+set $volumeUp   pamixer -i 5
+
+set $audioPlay  playerctl play-pause
+set $audioPause playerctl play-pause
+set $audioStop  playerctl play-pause
+set $audioPrev  playerctl previous
+set $audioNext  playerctl next
+
+set $menu         wofi --show drun
+set $menuBinaries wofi --show run
+# Get, select and send to clipboard preffered item from clipboard history
+set $clipboard cliphist list | wofi --dmenu | cliphist decode | wl-copy
+
+set $barRestart bash -c "pkill waybar; pkill kded6; sleep 0.5s; exec waybar"
+set $barHide    pkill -SIGUSR1 waybar
+
+#	--background $nagBg --text $nagFg \
+#	--button-background $nagBg --button-text $nagFg \
+#	--border $nagFg --border-bottom-size 0 \
+
+set $sessionExit swaynag -t warning \
+	-m 'You pressed the logout shortcut. Continue?' \
+	-B 'End session' 'pkill kwalletd6; sleep 0.5s; swaymsg exit'
+
+#
+#   STARTUP
+#
+
+# Temporary disable kded6 service, because it breaks waybar tray module
+# TODO: How to implement that
+
+# Idle daemon
+exec swayidle -w \
+	timeout 300 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+	timeout 310 'swaylock -f' \
+	before-sleep 'swaylock -f'
+
+# Polkit agent
+#exec systemctl --user status polkit-kde-authentication-agent-1.service
+
+# Clipboard history
+exec wl-paste --type text  --watch cliphist store
+exec wl-paste --type image --watch cliphist store
+
+# Status bar
+exec waybar
+
+# Notification daemon
+exec mako
+
+# Tray applets
+
+# NetworkManager
+#exec nm-applet
+
+# Bluetooth
+#exec blueman-applet
+
+# Wallpaper daemon
+exec waypaper --restore
+
+#
+#   INPUT
+#
+
+input "type:touchpad" {
+	# Disable While Typing
+	dwt false
+	middle_emulation true
+	natural_scroll true
+	tap true
+}
+
+input "type:pointer" {
+	accel_profile flat
+}
+
+input "type:keyboard" {
+	# By default sway set first layout from this list
+	xkb_layout "us,ru"
+	xkb_options "grp:win_space_toggle,grp:caps_toggle,grp_led:scroll"
+	# Works on startup
+	xkb_numlock enabled
+
+	#repeat_delay 500
+	#repeat_rate 50
+}
+
+#
+#   OUTPUT
+#
+
+# Default rules
+output eDP-1 {
+	mode 1920x1080@60Hz
+	position 0 0
+}
+
+output HDMI-A-1 {
+	mode 1920x1080@60Hz
+	position -1920 0
+}
+
+# Rules for specific monitors
+output "Philips Consumer Electronics Company PHL 276E8V UK82419002265" {
+	mode 3840x2160@60Hz scale 1.5
+#	mode 2560x1440@60HZ scale 1
+	position 1920 0
+}
+
+# Laptop
+output "AU Optronics 0xF992 Unknown" {
+	mode 1920x1080@60Hz scale 1
+	position 0 0
+}
+
+# Fix for wine games on external monitor
+# (xwayland wants that position of the display where wine is located to be 0x0)
+#output eDP-1 disable
+#output HDMI-A-1 position 0 0 mode 1920x1080@60Hz
+
+#
+#   WINDOW RULES
+#
+
+set $resizeSize 50ppt 80ppt
+
+for_window [shell="xwayland"] title_format "%title [XWayland]"
+
+# Idlers
+for_window {
+	[app_id="mpv"]       inhibit_idle fullscreen
+
+	[app_id="[Ll]ibrewolf"] inhibit_idle fullscreen
+	[app_id="[q]utebrowser"] inhibit_idle fullscreen
+	[title=".*— Sharing Indicator"] floating enable, sticky enable, move to scratchpad
+	[title=".* is sharing your screen."] floating enable
+
+	[app_id="vlc"] inhibit_idle fullscreen
+	[class="vlc"]  inhibit_idle fullscreen
+}
+
+# Pop-ups
+for_window {
+	[app_id="nm-connection-editor"]     floating enable
+	[app_id="nm-connection-editor"]     resize set $resizeSize
+	[app_id=".blueman-manager-wrapped"] floating enable
+	[app_id=".blueman-manager-wrapped"] resize set $resizeSize
+
+	[app_id="pavucontrol"] floating enable
+	[app_id="pavucontrol"] resize set $resizeSize
+	[app_id="waypaper"]    floating enable
+	[app_id="waypaper"]    resize set $resizeSize
+
+	[window_role="pop-up"]      floating enable
+	[window_role="bubble"]      floating enable
+	[window_role="dialog"]      floating enable
+	[window_type="dialog"]      floating enable
+	[window_type="menu"]        floating enable
+	[window_role="task_dialog"] floating enable
+
+	[window_role="GtkFileChooserDialog"] floating enable
+	[window_role="GtkFileChooserDialog"] resize set $resizeSize
+	[window_role="Preferences"] floating enable
+	[window_role="Preferences"] resize set $resizeSize
+	[title="(?:Open|Save) (?:File|Folder|As)"] floating enable;
+	[title="(?:Open|Save) (?:File|Folder|As)"] resize set $resizeSize
+	[app_id="org.freedesktop.impl.portal.*"] floating enable;
+	[app_id="org.freedesktop.impl.portal.*"] resize set $resizeSize
+	[title="Copy Files"] floating enable;
+	[title="Copy Files"] resize set $resizeSize
+	[title="Choose Files"] floating enable;
+	[title="Choose Files"] resize set $resizeSize
+	[title="Confirm to replace files"] floating enable;
+	[title="Confirm to replace files"] move position center
+	[title="Choose an Application"] floating enable
+	[title="Removable medium is inserted"] floating enable
+}
+
+# Don't allow applications to inhibit shortcuts, i.e. grab total control of the
+# keyboard
+seat * shortcuts_inhibitor disable
+
+# Applications for which shortcuts inhibition is allowed
+for_window {
+	[class="[Vv]irt-"] mark Grabbing
+	[app_id="[Vv]irtual[Bb]ox [Mm]achine"] mark Grabbing
+	[class="[Rr]eminna"] mark Grabbing
+	[app_id="[Vv]irt-"] mark Grabbing
+	[app_id="[Vv]irtual[Bb]ox [Mm]achine"] mark Grabbing
+	[app_id="[Rr]emmina"] mark Grabbing
+	[app_id="[Qq]emu"] mark Grabbing
+}
+
+# Inhibit keyboard shortcuts for marked applications
+for_window [con_mark="Grabbing"] shortcuts_inhibitor enable
+
+#
+#   BINDSYMS
+#
+
+set $mod     Mod4
+set $shftMod Mod4+Shift
+set $ctrlMod Mod4+Ctrl
+
+set $execMod Mod1+Ctrl
+
+# Application launch bindings
+bindsym --to-code {
+	$shftMod+c kill
+	Mod1+F4    kill
+	
+	$execMod+t exec $terminal
+	$mod+e     exec $fileManager
+	$execMod+w exec $browser
+	$execMod+e exec $browserRF
+	$execMod+q exec $telegram
+	$execMod+c exec $calculator
+	$execMod+s exec $volumemixer
+
+	$execMod+l exec $screenLock
+	$mod+F11   exec $displayToggle
+	$mod+F7   exec $scaleOne
+	$mod+F8   exec $scaleTwo
+
+	print          exec $screenshotScreen
+	$shftMod+print exec $screenshotRegion
+	$shftMod+s     exec $screenshotRegion
+	$mod+print     exec $screenshotWindow
+
+	$mod+p     exec $pickcolorHEX
+	$shftMod+p exec $pickcolorRGB
+	
+	$mod+d     exec $menu
+	$shftMod+d exec $menuBinaries
+	$mod+v     exec $clipboard
+	
+	$ctrlMod+b exec $barRestart
+	$mod+b     exec $barHide
+
+	$execMod+HOME exec $mountVault
+	$execMod+END  exec $closeVault
+}
+
+# Keyboard Fn bindings
+bindsym {
+	XF86MonBrightnessUp   exec $brightnessUp
+	XF86MonBrightnessDown exec $brightnessDown
+
+	XF86AudioLowerVolume exec $volumeDown
+	XF86AudioMute        exec $volumeMute
+	XF86AudioRaiseVolume exec $volumeUp
+
+	XF86AudioPlay  exec $audioPlay
+	XF86AudioPause exec $audioPause
+	XF86AudioStop  exec $audioStop
+	XF86AudioPrev  exec $audioPrev
+	XF86AudioNext  exec $audioNext
+
+	XF86Start      exec $menu
+	XF86Search     exec $menu
+	XF86Calculator exec $calculator
+}
+floating_modifier $mod normal
+
+bindsym --to-code {
+	$mod+x split vertical
+	$mod+c split horizontal
+	
+	$mod+s layout splith
+	$mod+w layout tabbed
+	$mod+q layout toggle
+	
+	$mod+z fullscreen
+	
+	$mod+Shift+f floating toggle
+	$mod+f focus mode_toggle
+	
+	$mod+a     focus parent
+	$shftMod+a focus child
+}
+
+mode "resize" {
+	# For resize mode
+	set $resizeStep 10px
+
+	bindsym --to-code {
+		Left resize shrink width $resizeStep
+		h    resize shrink width $resizeStep
+		Down resize shrink height $resizeStep
+		j    resize shrink height $resizeStep
+		Up resize grow height $resizeStep
+		k  resize grow height $resizeStep
+		Right resize grow width $resizeStep
+		l     resize grow width $resizeStep
+
+		Return mode "default"
+		Escape mode "default"
+	}
+}
+bindsym --to-code $mod+r mode "resize"
+
+bindsym --to-code {
+	$mod+Left focus left
+	$mod+h    focus left
+	$mod+Down focus down
+	$mod+j    focus down
+	$mod+Up focus up
+	$mod+k  focus up
+	$mod+Right focus right
+	$mod+l     focus right
+	
+	$mod+Shift+Left move left
+	$mod+Shift+h    move left
+	$mod+Shift+Down move down
+	$mod+Shift+j    move down
+	$mod+Shift+Up move up
+	$mod+Shift+k  move up
+	$mod+Shift+Right move right
+	$mod+Shift+l     move right
+}
+
+bindsym --to-code {
+	$mod+1 workspace number 1
+	$mod+2 workspace number 2
+	$mod+3 workspace number 3
+	$mod+4 workspace number 4
+	$mod+5 workspace number 5
+	$mod+6 workspace number 6
+	$mod+7 workspace number 7
+	$mod+8 workspace number 8
+	$mod+9 workspace number 9
+	$mod+0 workspace number 10
+
+	$mod+Shift+1 move container to workspace number 1
+	$mod+Shift+2 move container to workspace number 2
+	$mod+Shift+3 move container to workspace number 3
+	$mod+Shift+4 move container to workspace number 4
+	$mod+Shift+5 move container to workspace number 5
+	$mod+Shift+6 move container to workspace number 6
+	$mod+Shift+7 move container to workspace number 7
+	$mod+Shift+8 move container to workspace number 8
+	$mod+Shift+9 move container to workspace number 9
+	$mod+Shift+0 move container to workspace number 10
+}
+
+bindsym --to-code {
+	$shftMod+r reload
+	$shftMod+e exec $sessionExit
+}

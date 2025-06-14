@@ -1,0 +1,21 @@
+#window,
+#outer-box,
+#inner-box,
+#input {
+/*	border-radius: 12px; */
+}
+#expander-box,
+#entry:selected {
+	border-radius: 6px;
+}
+#expander-box,
+#img {
+	margin: 7px 7px;
+	background: @transparent;
+}
+#input {
+	padding: 7px 7px;
+}
+#scroll {
+	margin: 10px 0px;
+}

@@ -1,0 +1,23 @@
+[global]
+layer=top
+origin=top-right
+offset=10x10
+width=(0,720)
+height=(0,540)
+show_indicators=true
+progress_bar=true
+text_icon_padding=10
+horizontal_padding=10
+gap_size=10
+
+font=Ubuntu 10
+format=<b>%a</b>\n%b
+vertial_alignment=center
+icon_theme=Mint-Y-Blue
+
+dmenu=wofi --dmenu
+mouse_left=do_action,open_url,close_current
+mouse_middle=close_all
+mouse_right=close_current
+
+

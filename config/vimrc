@@ -1,0 +1,69 @@
+set encoding=utf8
+" Line numbers
+set number
+set relativenumber
+" Use mouse in terminal?
+set mouse=a
+" Minimal number of screen lines to keep above and below the cursor
+set ttyfast
+set scrolloff=30
+set wildmode=longest,list
+" Use a swapfile for the buffer
+set swapfile
+set nocompatible
+" Every wrapped line will continue visually indented (same amount of
+" space as the beginning of that line), thus preserving horizontal blocks
+" of text
+set breakindent
+set ignorecase
+set smartcase
+" Highlight search results in file
+set hlsearch
+" While typing a search command, show where the pattern, as it was typed
+set incsearch
+" Tab length in spaces
+set tabstop=4
+" Idk
+set shiftwidth=4
+" Tab in spaces equivalent
+set softtabstop=4
+" Use spaces instead of real tab
+set noexpandtab
+set smarttab
+set autoindent
+set smartindent
+
+set formatoptions=cro
+
+set list
+set listchars=tab:»\ ,trail:·,multispace:·,nbsp:␣
+
+" Highlight line with cursor
+set nocursorline
+" Where vertical/horizontal split should go
+set nosplitright
+set splitbelow
+
+syntax on
+
+"let mapleader=\
+"nnoremap <SPACE> <Nop>
+
+"{cmd} {attr} {lhs} {rhs}
+
+"where
+"{cmd}  is one of ':map', ':map!', ':nmap', ':vmap', ':imap',
+"       ':cmap', ':smap', ':xmap', ':omap', ':lmap', etc.
+"{attr} is optional and one or more of the following: <buffer>, <silent>,
+"       <expr> <script>, <unique> and <special>.
+"       More than one attribute can be specified to a map.
+"{lhs}  left hand side, is a sequence of one or more keys that you will use
+"       in your new shortcut.
+"{rhs}  right hand side, is the sequence of keys that the {lhs} shortcut keys
+"       will execute when entered.
+
+" Save file by Ctrl+s
+map <C-s> :w<CR>
+" Clear highlights on search when pressing <Esc> in normal mode
+" nmap <Esc> <cmd>nohlsearch<cr>
+

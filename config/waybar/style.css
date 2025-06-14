@@ -1,0 +1,97 @@
+/* GTK Css feature: variables for colors.
+* Nvim's language server may think that this is an error,
+* because normal css lacks of exacly this feature realisation
+* So disable lsp for this file */
+
+@define-color background @theme_base_color;
+@define-color foreground @theme_text_color;
+
+@define-color focused_bg @theme_selected_bg_color;
+@define-color focused_fg @theme_base_color;
+
+@define-color urgent_bg shade(@focused_bg, 0.8);
+@define-color urgent_fg @theme_text_color;
+
+@define-color module_bg shade(@background, 1);
+@define-color module_fg @foreground;
+
+@define-color workspace_focused_bg @focused_bg;
+@define-color workspace_focused_fg @focused_fg;
+
+@define-color battery_charging_bg @focused_bg;
+@define-color battery_charging_fg @focused_fg;
+
+/* For scalable bar by config */
+* {
+	min-height: 0px;
+}
+
+/* Background */
+window#waybar {
+	background: @background;
+	border-radius: 0px;
+	font-family: "Hack", "Nerd Font";
+	font-size:   14px;
+}
+
+/* Window module background when no windows */
+window#waybar.empty #window {
+	background: transparent;
+}
+
+/* Module theme
+* Some #modules excluded for they's extra styling options */
+.module:not(#workspaces):not(#mode):not(#battery) {
+	background: @module_bg;
+	color: @module_fg;
+	border-radius: 0px;
+}
+
+/* Margins & paddings for modules on bar corners */
+
+.modules-left .module:not(#workspaces){
+	margin-right: 2px;
+	padding: 0px 6px;
+}
+.modules-right .module {
+	margin-left: 2px;
+	padding: 0px 6px;
+}
+
+/* Extra styling */
+
+/* Context menu of tray item */
+#tray menu {
+	font-family: "Noto Sans";
+	font-size: 14px;
+}
+
+#workspaces button {
+	background: @module_bg;
+	color: @module_fg;
+	border-radius: 0px;
+	padding: 0px 6px;
+	margin-right: 2px;
+}
+
+/* with focus */
+#workspaces button.active,
+#workspaces button.focused,
+/* other monitor */
+#workspaces button.visible,
+/* Sway current bindsym mode (resize, etc...) */
+#mode {
+	background: @workspace_focused_bg;
+	color: @workspace_focused_fg;
+}
+
+#workspaces button.urgent {
+	background: @urgent_bg;
+	color: @urgent_fg;
+}
+
+#battery.charging {
+	background: @battery_charging_bg;
+	color: @battery_charging_fg;
+/*	border: 2px solid @battery_charging_fg; */
+}

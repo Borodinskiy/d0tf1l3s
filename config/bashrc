@@ -11,7 +11,7 @@ shopt -s autocd cdspell dirspell
 alias e="vim"
 alias se="sudo vim"
 
-alias tor='tor -f "$HOME_WORKSPACE/torrc"'
+alias tor='tor -f "$HOME_WORKSPACE/share/torrc"'
 alias wget-stream="yt-dlp --proxy=socks5://127.0.0.1:9051"
 
 # "Edit editor config"

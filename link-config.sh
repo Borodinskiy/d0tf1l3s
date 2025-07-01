@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 # If variable already defined than using it instead of this script location
 # Useful for termux environment
+
+# Where user store its documents, saves, etc.
+# By default its user's $HOME directory
+# To change value this variables should be defined before calling this script
+HOME_MYFILES="${HOME_MYFILES:-$HOME}"
+# Used for bookmarks and scripts
 HOME_WORKSPACE="${HOME_WORKSPACE:-$(realpath "$(dirname "$0")")}"
 
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -28,6 +34,15 @@ shell_source() {
 
 	if [ ! -f "$out" ] || [ "$(grep "source \"$in\"" < "$out")" == "" ]; then
 		echo "source \"$in\"" >> "$out"
+	fi
+}
+
+shell_var() {
+	in="$1"
+	out="$2"
+
+	if [ ! -f "$out" ] || [ "$(grep "export $in" < "$out")" == "" ]; then
+		echo "export $in" >> "$out"
 	fi
 }
 
@@ -64,12 +79,22 @@ SHELL_SOURCES_HOME=(
 	"bashrc"
 )
 
+SHELL_VARS=(
+	"HOME_MYFILES=\"$HOME_MYFILES\""
+	"HOME_WORKSPACE=\"$HOME_WORKSPACE\""
+)
+
 for file in "${LINK_CONFIGS[@]}"; do
 	link "$HOME_WORKSPACE/config/$file" "$XDG_CONFIG_HOME/$file"
 done
 
 for file in "${LINK_DATAS[@]}"; do
 	link "$HOME_WORKSPACE/config/$file" "$XDG_DATA_HOME/$file"
+done
+
+for file in "${SHELL_VARS[@]}"; do
+	shell_var "$file" "$HOME/.profile"
+	shell_var "$file" "$HOME/.bash_profile"
 done
 
 for file in "${SHELL_SOURCES_HOME[@]}"; do

@@ -7,5 +7,5 @@ NET_USERNAME="$1"
 NET_PATH="$2"
 MOUNT_PATH="${3:-/run/media/$USER/$2}"
 
-echo sudo mkdir -p "$MOUNT_PATH"
-echo sudo mount --types=cifs --options=gid="$GID",uid="$UID",username="$NET_USERNAME" "//$NET_PATH" "$MOUNT_PATH"
+sudo mkdir -p "$MOUNT_PATH"
+sudo mount --types=cifs --options=gid="$GID",uid="$UID",username="$NET_USERNAME" "//$NET_PATH" "$MOUNT_PATH"

@@ -20,7 +20,7 @@ AUTOLAUNCH=""
 winetricks_basetricks() {
 	echo "Packages:" "${PACKAGES[@]}"
 	echo "Installing some hardcoded (in this script) packages to $WINEPREFIX. . ."
-	${WINETRICKS} -q "${PACKAGES[@]}"
+	${WINETRICKS_CMD} -q "${PACKAGES[@]}"
 }
 
 autolaunch_prepare() {
@@ -46,21 +46,52 @@ runwine_native() {
 	# Because this script have same name as wine, using other wine's utility for path finding
 	WINEPATH="$(dirname "$(which wineserver)")"
 
+	local wrappers="gamemoderun"
+
 	TRICKSPATH="$(which winetricks)"
 
 	# Setting up wine locations
 	export WINE="$WINEPATH/wine"
 	export WINE64="$WINEPATH/wine64"
 	export WINESERVER="$WINEPATH/wineserver"
-	export WINETRICKS="$TRICKSPATH"
+	export WINETRICKS_CMD="$TRICKSPATH"
 
 	# If Wine build is fully 64-bit, set the WINE variable to WINE64
-	[ ! -f "${WINE}" ] && [ -f "${WINE64}" ] \
-		&& export WINE="${WINE64}"
+	[ ! -f "$WINE" ] && [ -f "$WINE64" ] \
+		&& export WINE="$WINE64"
+
+	local runwine="$wrappers $WINE"
 
 	case "$1" in
 		"winetricks")
-			${WINETRICKS} "${@:2}"
+			$WINETRICKS_CMD "${@:2}"
+			;;
+		"basetricks")
+			winetricks_basetricks
+			;;
+		"wineserver")
+			$WINESERVER "${@:2}"
+			;;
+		"auto")
+			autolaunch_prepare "${@:2}"
+			$runwine "${AUTOLAUNCH[@]}" "${@:3}"
+			;;
+		*)
+			$runwine "$@"
+			;;
+	esac
+}
+
+runwine_umu() {
+
+	export WINESERVER="umu-run wineserver"
+	export WINETRICKS_CMD="umu-run winetricks"
+
+	local runwine="umu-run"
+
+	case "$1" in
+		"winetricks")
+			${WINETRICKS_CMD} "${@:2}"
 			;;
 		"basetricks")
 			winetricks_basetricks
@@ -70,25 +101,50 @@ runwine_native() {
 			;;
 		"auto")
 			autolaunch_prepare "${@:2}"
-			gamemoderun "${WINE}" "${AUTOLAUNCH[@]}" "${@:3}"
+			$runwine "${AUTOLAUNCH[@]}" "${@:3}"
 			;;
 		*)
-			gamemoderun "${WINE}" "$@"
+			$runwine "$@"
 			;;
 	esac
 }
 
 # Change system language to russian (for gayming)
-export LANG=ru_RU.UTF-8
+[ -z "$WINESH_KEEP_LANG" ] && export LANG=ru_RU.UTF-8
+
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 export WINEPREFIX="${WINEPREFIX:-$HOME/.wine}"
 
-# Optimiz 229
-export WINEESYNC=0
-export WINEFSYNC=1
-export WINEFSYNC_FUTEX2=0
-export WINE_LARGE_ADDRESS_AWARE=1
+DLLOVERRIDES=(
+	"winemenubuilder.exe="
+
+	"d3dcompiler_43"
+	"d3dcompiler_47"
+	"d3d10core.dll"
+	"d3d11.dll"
+	"d3d8.dll"
+	"d3d9.dll"
+	"dinput8.dll"
+	"dxgi.dll"
+	# Last entry contains load order which applies to all previous dlls that not have it
+	"dstorage.dll=n,b"
+)
+
+prevhadorder=1
+for override in "${DLLOVERRIDES[@]}"; do
+	osymbol=""
+	if [ "$WINEDLLOVERRIDES" != "" ]; then
+		osymbol=";"
+		if [ -z "$prevhadorder" ]; then
+			osymbol=","
+		fi
+	fi
+	override="$osymbol$override"
+	export WINEDLLOVERRIDES="$WINEDLLOVERRIDES$override"
+	# If override contains equal sign that means it have load order
+	[[ $override == *"="* ]] && prevhadorder=1 || prevhadorder=""
+done
 
 # Enable AMD FidelityFX Super Resolution (FSR)
 export WINE_FULLSCREEN_FSR=1
@@ -99,15 +155,10 @@ export __GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1
 export __GL_SHADER_DISK_CACHE_PATH="${XDG_CACHE_HOME}"
 
 # DXVK variables
-
-# idk what is this, maybe useless
-#export VK_ICD_FILENAMES="/usr/share/vulkan/icd.d/radeon_icd.x86_64.json"
-
 export DXVK_LOG_PATH="${XDG_CACHE_HOME}/dxvk"
 export DXVK_STATE_CACHE_PATH="${XDG_CACHE_HOME}/dxvk"
 export DXVK_LOG_LEVEL=${DXVK_LOG_LEVEL:-none}
 export DXVK_HUD="${DXVK_HUD:-0}"
-
 export DXVK_ASYNC=1
 #export DXVK_STATE_CACHE=0
 #export DXVK_FRAME_RATE=60
@@ -123,7 +174,7 @@ export STAGING_SHARED_MEMORY=1
 export ULIMIT_SIZE=1000000
 
 # Finally, sending arguments from this script to preffered runwine_* function
-runwine_native "$@"
+runwine_umu "$@"
 
 # Removing possible created shit in applications menu
 rm -f ~/.local/share/mime/packages/x-wine*

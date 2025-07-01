@@ -11,16 +11,6 @@ shopt -s autocd cdspell dirspell
 alias e="vim"
 alias se="sudo vim"
 
-# File manager
-f() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		builtin cd -- "$cwd" || true
-	fi
-	rm -f -- "$tmp"
-}
-
 alias tor='tor -f "$HOME_WORKSPACE/torrc"'
 alias wget-stream="yt-dlp --proxy=socks5://127.0.0.1:9051"
 

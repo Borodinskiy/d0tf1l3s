@@ -87,7 +87,7 @@ runwine_umu() {
 	export WINESERVER="umu-run wineserver"
 	export WINETRICKS_CMD="umu-run winetricks"
 
-	local runwine="umu-run"
+	local runwine="gamemoderun umu-run"
 
 	case "$1" in
 		"winetricks")
@@ -119,9 +119,13 @@ export WINEPREFIX="${WINEPREFIX:-$HOME/.wine}"
 DLLOVERRIDES=(
 	"winemenubuilder.exe="
 
-	"d3dcompiler_43"
-	"d3dcompiler_47"
+	"d3dcompiler_43.dll"
+	"d3dcompiler_46.dll"
+	"d3dcompiler_47.dll"
+	"d3dcsx_46.dll"
 	"d3d10core.dll"
+	"doge64.dll"
+	"steam_api_ext64.dll"
 	"d3d11.dll"
 	"d3d8.dll"
 	"d3d9.dll"

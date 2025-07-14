@@ -1,1 +1,23 @@
-/run/media/user/drive_d/sync/venam/sing-box.json
+{
+  "type": "vless",
+  "tag": "proxy",
+  "server": "",
+  "server_port": 1234,
+  "uuid": "",
+  "flow": "",
+  "packet_encoding": "",
+  "tls": {
+    "enabled": true,
+    "server_name": "",
+    "insecure": false,
+    "utls": {
+      "enabled": true,
+      "fingerprint": ""
+    },
+    "reality": {
+      "enabled": true,
+      "public_key": "",
+      "short_id": ""
+    }
+  }
+}

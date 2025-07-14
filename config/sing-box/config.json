@@ -28,14 +28,12 @@
       {
         "inbound": "tun-in",
         "server": "proxy",
-        "process_name":
-        "<PROXY_PROCESSES>"
+        "process_name": "<PROXY_PROCESSES>"
       },
       {
         "inbound": "tun-in",
         "server": "proxy",
-        "domain_suffix":
-        "<PROXY_DOMAINS>"
+        "domain_suffix": "<PROXY_DOMAINS>"
       }
     ],
     "final": "direct",
@@ -63,8 +61,7 @@
     }
   ],
   "outbounds": [
-    "<PROXY_OUTBOUND>"
-    ,
+    "<PROXY_OUTBOUND>",
     {
       "type": "direct",
       "tag": "direct"
@@ -94,14 +91,12 @@
       {
         "inbound": "tun-in",
         "outbound": "proxy",
-        "process_name":
-        "<PROXY_PROCESSES>"
+        "process_name": "<PROXY_PROCESSES>"
       },
       {
         "inbound": "tun-in",
         "outbound": "proxy",
-        "domain_suffix":
-        "<PROXY_DOMAINS>"
+        "domain_suffix": "<PROXY_DOMAINS>"
       }
     ],
     "final": "direct",

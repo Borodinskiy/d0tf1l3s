@@ -7,7 +7,7 @@ CONFIG="/tmp/singbox-$USER.json"
 
 cd "$SCRIPT_HOME" || exit 1
 
-install -m 700 "config.json" "$CONFIG"
+install -m 700 "/dev/null" "$CONFIG"
 
 # what is that
 awk '

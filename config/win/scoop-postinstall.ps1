@@ -12,14 +12,7 @@ scoop install mpv
 scoop install obs-studio
 scoop install prismlauncher
 scoop install qbittorrent
-#scoop install msiafterburner rtss
 
-scoop install hack-font windows-terminal neovim neovim-qt vifm
+scoop install hack-font windows-terminal
 
 scoop install nekoray
-
-# Installing shims
-scoop shim add e nvim
-
-# Extra commands
-dotnet tool install --global csharp-ls

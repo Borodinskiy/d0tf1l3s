@@ -92,12 +92,12 @@ for file in "${LINK_DATAS[@]}"; do
 	link "$HOME_WORKSPACE/config/$file" "$XDG_DATA_HOME/$file"
 done
 
-for file in "${SHELL_VARS[@]}"; do
-	shell_var "$file" "$HOME/.profile"
-	shell_var "$file" "$HOME/.bash_profile"
+for var in "${SHELL_VARS[@]}"; do
+	shell_var "$var" "$HOME/.profile"
+	shell_var "$var" "$HOME/.bash_profile"
 done
 
 for file in "${SHELL_SOURCES_HOME[@]}"; do
 	shell_source "$HOME_WORKSPACE/config/$file" "$HOME/.$file"
-	shell_source "$HOME_WORKSPACE/config/$file" "$HOME/.bash_profile"
+	shell_source "$HOME/.$file" "$HOME/.bash_profile"
 done

@@ -3,7 +3,7 @@
 SCRIPT_HOME="$(dirname "$0")"
 [ "$HOME_WORKSPACE" ] && SCRIPT_HOME="$HOME_WORKSPACE/config/sing-box"
 
-CONFIG="/tmp/singbox-$USER.json"
+CONFIG="${CONFIG:-/tmp/singbox-$USER.json}"
 
 cd "$SCRIPT_HOME" || exit 1
 

@@ -1,43 +1,67 @@
 #!/usr/bin/env bash
 
+handle_specific_settings() {
+	case "$1" in
+		"windows")
+			auto_route="true"
+			auto_redirect="false"
+			;;
+		"android")
+			auto_route="false"
+			auto_redirect="false"
+			;;
+	esac
+	install -m 700 "/dev/null" "$CONFIG.tmp"
+	sed \
+		-e "s/\"auto_route\": true/\"auto_route\": $auto_route/" \
+		-e "s/\"auto_redirect\": true/\"auto_redirect\": $auto_redirect/" \
+		"$CONFIG" > "$CONFIG.tmp"
+	mv "$CONFIG.tmp" "$CONFIG"
+}
+
 SCRIPT_HOME="$(dirname "$0")"
 [ "$HOME_WORKSPACE" ] && SCRIPT_HOME="$HOME_WORKSPACE/config/sing-box"
 
-CONFIG="${CONFIG:-/tmp/singbox-$USER.json}"
+if { [ "$1" == "android" ] || [ "$1" == "windows" ]; } && [ "$CONFIG" == "" ]; then
+	CONFIG="${HOME_MYFILES:-$HOME}/sing-box.json"
+else
+	CONFIG="${CONFIG:-/tmp/singbox-$USER.json}"
+fi
 
 cd "$SCRIPT_HOME" || exit 1
 
 install -m 700 "/dev/null" "$CONFIG"
 
-# what is that
 awk '
+	function readfile(file, content, line) {
+		content = ""
+		while ((getline line < file) > 0) {
+			content = (content ? content "\n" : "") line
+		}
+		close(file)
+		return content
+	}
 	BEGIN {
-		while ((getline line < "processes.json") > 0) {
-				processes_content = (processes_content ? processes_content "\n" : "") line
-		}
-		close("processes.json")
-		while ((getline line < "android-packages.json") > 0) {
-				packages_content = (packages_content ? packages_content "\n" : "") line
-		}
-		close("android-packages.json")
-		
-		while ((getline line < "domains.json") > 0) {
-				domains_content = (domains_content ? domains_content "\n" : "") line
-		}
-		close("domains.json")
-		
-		while ((getline line < "proxy.json") > 0) {
-				proxy_content = (proxy_content ? proxy_content "\n" : "") line
-		}
-		close("proxy.json")
+		processes_proxy  = readfile("processes.json")
+		android_packages = readfile("android-packages.json")
+		domains_proxy    = readfile("domains-proxy.json")
+		domains_direct   = readfile("domains-direct.json")
+		outbound_proxy   = readfile("proxy.json")
 	}
 	{
-		gsub(/"<PROXY_PROCESSES>"/, processes_content)
-		gsub(/"<ANDROID_PACKAGES>"/, packages_content)
-		gsub(/"<PROXY_DOMAINS>"/, domains_content)
-		gsub(/"<PROXY_OUTBOUND>"/, proxy_content)
+		gsub(/"<PROCESSES_PROXY>"/, processes_proxy)
+		gsub(/"<ANDROID_PACKAGES>"/, android_packages)
+		gsub(/"<DOMAINS_PROXY>"/, domains_proxy)
+		gsub(/"<DOMAINS_DIRECT>"/, domains_direct)
+		gsub(/"<OUTBOUND_PROXY>"/, outbound_proxy)
 		print
 	}
 ' "config.json" > "$CONFIG"
 
-sudo sing-box run --config "$CONFIG"
+if [ "$1" == "android" ] || [ "$1" == "windows" ]; then
+	handle_specific_settings "$1"
+	echo "Saved $1 configuration to $CONFIG"
+else
+	[ "$1" != "" ] && echo "Unknown system \"$1\""
+	sudo sing-box run --config "$CONFIG"
+fi

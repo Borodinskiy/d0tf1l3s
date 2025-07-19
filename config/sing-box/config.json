@@ -28,7 +28,7 @@
       {
         "inbound": "tun-in",
         "server": "proxy",
-        "process_name": "<PROXY_PROCESSES>"
+        "process_name": "<PROCESSES_PROXY>"
       },
       {
         "inbound": "tun-in",
@@ -38,7 +38,11 @@
       {
         "inbound": "tun-in",
         "server": "proxy",
-        "domain_suffix": "<PROXY_DOMAINS>"
+        "domain_suffix": "<DOMAINS_PROXY>"
+      },
+      {
+        "server": "direct",
+        "domain_suffix": "<DOMAINS_DIRECT>"
       }
     ],
     "final": "direct",
@@ -53,7 +57,7 @@
       "type": "tun",
       "tag": "tun-in",
       "address": "172.19.0.1/30",
-      "auto_route": true, // Linux only
+      "auto_route": true,
       "auto_redirect": true,
       "strict_route": true
     },
@@ -66,7 +70,7 @@
     }
   ],
   "outbounds": [
-    "<PROXY_OUTBOUND>",
+    "<OUTBOUND_PROXY>",
     {
       "type": "direct",
       "tag": "direct"
@@ -96,7 +100,7 @@
       {
         "inbound": "tun-in",
         "outbound": "proxy",
-        "process_name": "<PROXY_PROCESSES>"
+        "process_name": "<PROCESSES_PROXY>"
       },
       {
         "inbound": "tun-in",
@@ -106,7 +110,11 @@
       {
         "inbound": "tun-in",
         "outbound": "proxy",
-        "domain_suffix": "<PROXY_DOMAINS>"
+        "domain_suffix": "<DOMAINS_PROXY>"
+      },
+      {
+        "outbound": "direct",
+        "domain_suffix": "<DOMAINS_DIRECT>"
       }
     ],
     "final": "direct",

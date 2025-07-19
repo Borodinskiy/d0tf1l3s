@@ -16,6 +16,10 @@ awk '
 				processes_content = (processes_content ? processes_content "\n" : "") line
 		}
 		close("processes.json")
+		while ((getline line < "android-packages.json") > 0) {
+				packages_content = (packages_content ? packages_content "\n" : "") line
+		}
+		close("android-packages.json")
 		
 		while ((getline line < "domains.json") > 0) {
 				domains_content = (domains_content ? domains_content "\n" : "") line
@@ -29,6 +33,7 @@ awk '
 	}
 	{
 		gsub(/"<PROXY_PROCESSES>"/, processes_content)
+		gsub(/"<ANDROID_PACKAGES>"/, packages_content)
 		gsub(/"<PROXY_DOMAINS>"/, domains_content)
 		gsub(/"<PROXY_OUTBOUND>"/, proxy_content)
 		print

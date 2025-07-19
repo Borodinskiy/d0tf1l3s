@@ -33,6 +33,11 @@
       {
         "inbound": "tun-in",
         "server": "proxy",
+        "package_name": "<ANDROID_PACKAGES>"
+      },
+      {
+        "inbound": "tun-in",
+        "server": "proxy",
         "domain_suffix": "<PROXY_DOMAINS>"
       }
     ],
@@ -48,7 +53,7 @@
       "type": "tun",
       "tag": "tun-in",
       "address": "172.19.0.1/30",
-      "auto_route": true,
+      "auto_route": true, // Linux only
       "auto_redirect": true,
       "strict_route": true
     },
@@ -92,6 +97,11 @@
         "inbound": "tun-in",
         "outbound": "proxy",
         "process_name": "<PROXY_PROCESSES>"
+      },
+      {
+        "inbound": "tun-in",
+        "outbound": "proxy",
+        "package_name": "<ANDROID_PACKAGES>"
       },
       {
         "inbound": "tun-in",

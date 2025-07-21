@@ -18,12 +18,12 @@
     ],
     "rules": [
       {
-        "inbound": "proxy-in",
-        "server": "proxy"
-      },
-      {
         "protocol": "bittorrent",
         "server": "direct"
+      },
+      {
+        "server": "direct",
+        "domain_suffix": "<DOMAINS_DIRECT>"
       },
       {
         "inbound": "tun-in",
@@ -41,8 +41,8 @@
         "domain_suffix": "<DOMAINS_PROXY>"
       },
       {
-        "server": "direct",
-        "domain_suffix": "<DOMAINS_DIRECT>"
+        "inbound": "proxy-in",
+        "server": "proxy"
       }
     ],
     "final": "direct",
@@ -90,12 +90,12 @@
         "outbound": "direct"
       },
       {
-        "inbound": "proxy-in",
-        "outbound": "proxy"
-      },
-      {
         "protocol": "bittorrent",
         "outbound": "direct"
+      },
+      {
+        "outbound": "direct",
+        "domain_suffix": "<DOMAINS_DIRECT>"
       },
       {
         "inbound": "tun-in",
@@ -113,8 +113,8 @@
         "domain_suffix": "<DOMAINS_PROXY>"
       },
       {
-        "outbound": "direct",
-        "domain_suffix": "<DOMAINS_DIRECT>"
+        "inbound": "proxy-in",
+        "outbound": "proxy"
       }
     ],
     "final": "direct",

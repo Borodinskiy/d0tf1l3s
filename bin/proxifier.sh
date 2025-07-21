@@ -25,7 +25,7 @@ SCRIPT_HOME="$(dirname "$0")"
 if { [ "$1" == "android" ] || [ "$1" == "windows" ]; } && [ "$CONFIG" == "" ]; then
 	CONFIG="${HOME_MYFILES:-$HOME}/sing-box.json"
 else
-	CONFIG="${CONFIG:-/tmp/singbox-$USER.json}"
+	CONFIG="${CONFIG:-/tmp/sing-box-$USER.json}"
 fi
 
 cd "$SCRIPT_HOME" || exit 1

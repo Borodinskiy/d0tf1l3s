@@ -7,7 +7,7 @@ handle_specific_settings() {
 			auto_redirect="false"
 			;;
 		"android")
-			auto_route="false"
+			auto_route="true, \"mtu\": 1500"
 			auto_redirect="false"
 			;;
 	esac

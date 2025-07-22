@@ -22,26 +22,24 @@
         "server": "direct"
       },
       {
-        "server": "direct",
-        "domain_suffix": "<DOMAINS_DIRECT>"
+        "domain_suffix": "<DOMAINS_DIRECT>",
+        "server": "direct"
       },
       {
-        "inbound": "tun-in",
-        "server": "proxy",
-        "process_name": "<PROCESSES_PROXY>"
-      },
-      {
-        "inbound": "tun-in",
-        "server": "proxy",
-        "package_name": "<ANDROID_PACKAGES>"
-      },
-      {
-        "inbound": "tun-in",
-        "server": "proxy",
-        "domain_suffix": "<DOMAINS_PROXY>"
+        "domain_suffix": "<DOMAINS_PROXY>",
+        "server": "proxy"
       },
       {
         "inbound": "proxy-in",
+        "server": "proxy"
+      },
+      {
+        "package_name": "<ANDROID_PACKAGES>",
+        "server": "proxy"
+      },
+      {
+        "inbound": "tun-in",
+        "process_name": "<PROCESSES_PROXY>",
         "server": "proxy"
       }
     ],
@@ -94,31 +92,28 @@
         "outbound": "direct"
       },
       {
-        "outbound": "direct",
-        "domain_suffix": "<DOMAINS_DIRECT>"
+        "domain_suffix": "<DOMAINS_DIRECT>",
+        "outbound": "direct"
       },
       {
-        "inbound": "tun-in",
-        "outbound": "proxy",
-        "process_name": "<PROCESSES_PROXY>"
-      },
-      {
-        "inbound": "tun-in",
-        "outbound": "proxy",
-        "package_name": "<ANDROID_PACKAGES>"
-      },
-      {
-        "inbound": "tun-in",
-        "outbound": "proxy",
-        "domain_suffix": "<DOMAINS_PROXY>"
+        "domain_suffix": "<DOMAINS_PROXY>",
+        "outbound": "proxy"
       },
       {
         "inbound": "proxy-in",
         "outbound": "proxy"
+      },
+      {
+        "package_name": "<ANDROID_PACKAGES>",
+        "outbound": "proxy"
+      },
+      {
+        "inbound": "tun-in",
+        "process_name": "<PROCESSES_PROXY>",
+        "outbound": "proxy"
       }
     ],
     "final": "direct",
-    "auto_detect_interface": true,
-    "override_android_vpn": true
+    "auto_detect_interface": true
   }
 }

@@ -3,6 +3,8 @@
 # Fixes for some operations with "*" operand (like /directory/*.exe)
 shopt -s nullglob
 
+DESKTOPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+
 # Name for script that runs program
 RUNSCRIPT="run.sh"
 
@@ -35,7 +37,6 @@ create_desktop() {
 
 	# Location of desktop file
 	filename="[$executable] $name.desktop"
-	desktopdir="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
 	tempdir="/tmp"
 
 	# Changing some categories to desktop file format
@@ -68,15 +69,15 @@ Actions=DeleteShortcut
 Name=Remove this shortcut
 Name[ru_RU]=Удалить этот ярлык
 Icon=edit-clear-all-symbolic
-Exec=rm -f "$desktopdir/$filename"
+Exec=rm -f "$DESKTOPDIR/$filename"
 EOF
 
 	chmod +x "$tempdir/$filename"
 
 	# Checking if previously created desktop file have differences with new one
-	if [ -f "$desktopdir/$filename" ] &&
+	if [ -f "$DESKTOPDIR/$filename" ] &&
 	[ \
-		"$(sha256sum "$desktopdir/$filename" | awk '{print $1}')" == \
+		"$(sha256sum "$DESKTOPDIR/$filename" | awk '{print $1}')" == \
 		"$(sha256sum "$tempdir/$filename"    | awk '{print $1}')" \
 	]
 	then
@@ -86,14 +87,24 @@ EOF
 	else
 		# Replacing old file. Sleep check allows desktop environment to update application menus
 		printf "+] "
-		rm -f "$desktopdir/$filename"
+		rm -f "$DESKTOPDIR/$filename"
 		sleep 0.5s
-		mv "$tempdir/$filename" "$desktopdir/$filename"
+		mv "$tempdir/$filename" "$DESKTOPDIR/$filename"
 	fi
 
 	# Finally printing what we used for desktop file
 	echo "$name: $executable & $icon"
 }
+
+case "$1" in
+	"--help" | "-h")
+		echo "Usage: $0"
+		echo "	--clean	firstly remove all previously created [$RUNSCRIPT]* shortcuts" \
+		"$0" "$RUNSCRIPT"
+		exit 0
+		;;
+	"--clean") rm -f "$DESKTOPDIR/[$RUNSCRIPT] "* ;;
+esac
 
 for root in "${ROOTS[@]}"; do
 	# Skip directory if couldn't cd in it

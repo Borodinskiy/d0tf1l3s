@@ -1,6 +1,6 @@
-{
+{ // Default settings should be at least compatible with linux, android and windows
   "log": {
-    "level": "warn",
+    "level": "fatal",
     "timestamp": true
   },
   "dns": {
@@ -12,17 +12,17 @@
         "detour": "direct"
       },
       {
-        "tag": "proxy",
+        "tag": "remote",
         "address": "tcp://1.1.1.1",
-        "detour": "proxy"
+        "detour": "remote"
       }
     ],
     // We can use rule filter by packet outbound
     // to find out which goes into proxy
     "rules": [
       {
-        "outbound": "proxy",
-        "server": "proxy"
+        "outbound": "remote",
+        "server": "remote"
       }
     ],
     // And bypass direct packets
@@ -35,13 +35,13 @@
   },
   "inbounds": [
     // Interface, that handles all system traffic
-    // Setup for Linux, needs small changes for other OS
     {
       "type": "tun",
       "tag": "tun-in",
       "address": "172.19.0.1/30",
+      "mtu": 9000,
       "auto_route": true,
-      "auto_redirect": true,
+      "auto_redirect": false,
       "strict_route": true
     },
     { // SOCKS5/HTTP proxy server
@@ -55,7 +55,7 @@
   "outbounds": [
     // Proxy. Inserts here after config generation
     // Example in proxy.json.example
-    "<OUTBOUND_PROXY>",
+    "<OUTBOUND_REMOTE>",
     { // Bypass
       "type": "direct",
       "tag": "direct"
@@ -139,11 +139,11 @@
           "ytimg.com",
           "ytimg.l.google.com"
         ],
-        "outbound": "proxy"
+        "outbound": "remote"
       },
       { // All traffic that comes into proxy server... Will be proxied
         "inbound": "proxy-in",
-        "outbound": "proxy"
+        "outbound": "remote"
       },
       { // Android apps
         "package_name": [
@@ -153,7 +153,7 @@
           "com.aurora.store",
           "com.discord"
         ],
-        "outbound": "proxy"
+        "outbound": "remote"
       },
       { // OS processes
         "inbound": "tun-in",
@@ -167,7 +167,7 @@
           "songrec",
           "songrec.exe"
         ],
-        "outbound": "proxy"
+        "outbound": "remote"
       }
     ],
     // Non matched traffic bypasses proxy

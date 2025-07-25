@@ -1,6 +1,6 @@
 {
   "type": "vless",
-  "tag": "proxy",
+  "tag": "remote",
   "server": "",
   "server_port": 1234,
   "uuid": "",

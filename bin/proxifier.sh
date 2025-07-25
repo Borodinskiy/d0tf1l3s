@@ -1,21 +1,13 @@
 #!/usr/bin/env bash
 
-handle_specific_settings() {
-	case "$1" in
-		"windows")
-			auto_route="true"
-			auto_redirect="false"
-			;;
-		"android")
-			auto_route="true, \"mtu\": 1500"
-			auto_redirect="false"
-			;;
-	esac
+if [ -z "$1" ]; then
+	echo "Specify OS ($(basename "$0") linux/android/windows)"
+	exit 1
+fi
+
+replace_in_file() {
 	install -m 700 "/dev/null" "$CONFIG.tmp"
-	sed \
-		-e "s/\"auto_route\": true/\"auto_route\": $auto_route/" \
-		-e "s/\"auto_redirect\": true/\"auto_redirect\": $auto_redirect/" \
-		"$CONFIG" > "$CONFIG.tmp"
+	sed -e "s/$1/$2/" "$CONFIG" > "$CONFIG.tmp"
 	mv "$CONFIG.tmp" "$CONFIG"
 }
 
@@ -25,11 +17,14 @@ else
 	SCRIPT_HOME="$HOME_WORKSPACE/config/sing-box"
 fi
 
-if [ -z "$CONFIG" ] && { [ "$1" == "android" ] || [ "$1" == "windows" ]; }; then
-	CONFIG="${HOME_MYFILES:-$HOME}/sing-box.json"
-else
-	CONFIG="${CONFIG:-/tmp/sing-box-$USER.json}"
-fi
+[ -z "$CONFIG" ] && case "$1" in
+	"windows" | "android")
+		CONFIG="${HOME_MYFILES:-$HOME}/sing-box.json"
+		;;
+	"linux")
+		CONFIG="/tmp/sing-box-$USER.json"
+		;;
+esac
 
 cd "$SCRIPT_HOME" || exit 1
 install -m 700 "/dev/null" "$CONFIG" || exit 1
@@ -43,18 +38,23 @@ awk '
 		return content
 	}
 	BEGIN {
-		outbound_proxy = readfile("proxy.json")
+		outbound_remote = readfile("proxy.json")
 	}
 	{
-		gsub(/"<OUTBOUND_PROXY>"/, outbound_proxy)
+		gsub(/"<OUTBOUND_REMOTE>"/, outbound_remote)
 		print
 	}
 ' "config.jsonc" > "$CONFIG"
 
-if [ "$1" == "android" ] || [ "$1" == "windows" ]; then
-	handle_specific_settings "$1"
-	echo "Saved $1 configuration to $CONFIG"
-else
-	[ ! -z "$1" ] && echo "Unknown system \"$1\""
+case "$1" in
+	"linux")
+		replace_in_file "\"auto_redirect\": false" "\"auto_redirect\": true"
+		;;
+esac
+
+echo "Saved $1 configuration to $CONFIG"
+
+if [ -f "$(which sing-box)" ] && [ -f "$(which sudo)" ]; then
+	echo "Found sudo and sing-box, autostarting. . ."
 	sudo sing-box run --config "$CONFIG"
 fi

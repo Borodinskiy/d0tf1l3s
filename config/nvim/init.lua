@@ -262,7 +262,6 @@ require("lazy").setup({
 	{ "echasnovski/mini.nvim",
 		version = "*",
 	},
-	{ "equalsraf/neovim-gui-shim", },
 	{ "preservim/nerdtree",
 		dependencies = {
 			{ "ryanoasis/vim-devicons"},
@@ -285,56 +284,6 @@ require("lazy").setup({
 				builtin.grep_string({ search = vim.fn.input("Grep > ") })
 			end)
 		end,
-	},
-	{ "nvim-treesitter/nvim-treesitter",
-		build = ":TSUpdate",
-		main = "nvim-treesitter.configs",
-		opts = {
-			-- A list of parser names, or "all" (the listed parsers MUST always be installed)
-			ensure_installed = {
-				"bash",
-				"c",
-				"c_sharp",
-				"diff",
-				"html",
-				"lua",
-				"luadoc",
-				"markdown",
-				"markdown_inline",
-				"query",
-				"vim",
-				"vimdoc",
-				"hyprlang",
-				"python",
-				"java",
-				"javascript",
-				"xml",
-				"gdscript",
-				"powershell",
-				"purescript",
-				"bibtex",
-				"latex",
-			},
-
-			auto_install = true,
-
-			-- Install parsers synchronously (only applied to `ensure_installed`)
-			sync_install = false,
-
-			highlight = {
-				enable = true,
-
-				-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-				-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-				-- Using this option may slow down your editor, and you may see some duplicate highlights.
-				-- Instead of true it can also be a list of languages
-				additional_vim_regex_highlighting = false,
-			},
-
-			indent = {
-				enable = true,
-			},
-		},
 	},
 	{ "mbbill/undotree",
 		config = function()

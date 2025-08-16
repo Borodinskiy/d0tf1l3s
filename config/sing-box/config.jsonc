@@ -4,6 +4,12 @@
     "timestamp": true
   },
   "dns": {
+    "cache_capacity": 0,
+    "disable_cache": false,
+    "disable_expire": false,
+    // Not redirect direct packets
+    "final": "direct",
+    "independent_cache": true,
     // So we can completly hide proxied websites
     "servers": [
       {
@@ -25,24 +31,22 @@
         "server": "remote"
       }
     ],
-    // And bypass direct packets
-    "final": "direct",
-    "strategy": "ipv4_only",
-    "disable_cache": false,
-    "disable_expire": false,
-    "independent_cache": true,
-    "cache_capacity": 0
+    "strategy": "ipv4_only"
   },
   "inbounds": [
-    // Interface, that handles all system traffic
     {
       "type": "tun",
       "tag": "tun-in",
-      "address": "172.19.0.1/30",
-      "mtu": 9000,
+      "mtu": 1400,
+      "address": [
+        "172.16.0.1/30",
+        "fd00::1/126"
+      ],
       "auto_route": true,
       "auto_redirect": false,
-      "strict_route": true
+      "strict_route": true,
+      "stack": "gvisor",
+      "sniff": true
     },
     { // SOCKS5/HTTP proxy server
       "type": "mixed",
@@ -62,6 +66,9 @@
     }
   ],
   "route": {
+    "auto_detect_interface": true,
+    // Non matched traffic bypasses proxy
+    "final": "direct",
     "rules": [
       {
         "action": "sniff"
@@ -169,9 +176,6 @@
         ],
         "outbound": "remote"
       }
-    ],
-    // Non matched traffic bypasses proxy
-    "final": "direct",
-    "auto_detect_interface": true
+    ]
   }
 }

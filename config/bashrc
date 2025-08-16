@@ -41,18 +41,22 @@ alias lh="ls -lh"
 alias lha="ls -lha"
 
 # Music shuffle
-musical() {
-	find "$HOME_MYFILES/music" -type f \
+
+genplaylist() {
+	find "$1" -type f \
 	-not -iname "*.png" -not -iname "*.jpg" -not -iname "*.7z" \
-	-not -iname "*.bak" -not -wholename "*.stversions*" | sort -R > /tmp/songlist.txt
-	mpv --no-video --playlist=/tmp/songlist.txt
+	-not -iname "*.bak" -not -wholename "*.stversions*" \
+	| sort -R > /tmp/songlist.txt
+}
+
+musical() {
+	genplaylist "$HOME_MYFILES/music"
+	mpv --no-resume-playback --no-video --playlist=/tmp/songlist.txt
 }
 
 musical-chill() {
-	find "$HOME_MYFILES/music/ChillOut" -type f \
-	-not -iname "*.png" -not -iname "*.jpg" -not -iname "*.7z" \
-	-not -iname "*.bak" -not -wholename "*.stversions*" | sort -R > /tmp/songlist.txt
-	mpv --no-video --playlist=/tmp/songlist.txt
+	genplaylist "$HOME_MYFILES/music/ChillOut"
+	mpv --no-resume-playback --no-video --playlist=/tmp/songlist.txt
 }
 
 musicontinue() {

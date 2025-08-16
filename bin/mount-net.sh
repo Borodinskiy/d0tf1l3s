@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 if [ -z "$2" ]; then
-	echo "Please specify auth username and network path and mount path as extra argument"
+	name="$(basename "$0")"
+	echo "Usage: $name LOGIN NET_PATH [MOUNT_PATH]"
+	echo "Example: $name abobach 127.0.0.1/public /mnt/public"
 	exit 1
 fi
 NET_USERNAME="$1"

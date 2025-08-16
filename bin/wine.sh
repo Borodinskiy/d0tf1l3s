@@ -35,77 +35,55 @@ autolaunch_prepare() {
 			exit 1
 			;;
 	esac
-	if ! cd "$dir" &> /dev/null
-	then
-		echo "Could not cd into $dir"
-		exit 1
-	fi
+	cd "$dir" || exit 1
 }
 
 runwine_native() {
-	# Because this script have same name as wine, using other wine's utility for path finding
-	WINEPATH="$(dirname "$(which wineserver)")"
-
+	# Path to bin directory where stored wine, winecfg, wineserver, etc. binaries
+	local winedir="${winedir:-$(dirname "$(which wine)")}"
+	local tricksdir="$(which winetricks)"
 	local wrappers="gamemoderun"
 
-	TRICKSPATH="$(which winetricks)"
 
 	# Setting up wine locations
-	export WINE="$WINEPATH/wine"
-	export WINE64="$WINEPATH/wine64"
-	export WINESERVER="$WINEPATH/wineserver"
-	export WINETRICKS_CMD="$TRICKSPATH"
+	export WINE="$winedir/wine"
+	export WINE64="$winedir/wine64"
+	export WINESERVER="$winedir/wineserver"
+	export WINETRICKS_CMD="$tricksdir"
 
-	# If Wine build is fully 64-bit, set the WINE variable to WINE64
+	# If Wine build is fully 64-bit then set WINE variable to match WINE64 value
 	[ ! -f "$WINE" ] && [ -f "$WINE64" ] \
 		&& export WINE="$WINE64"
 
 	local runwine="$wrappers $WINE"
 
 	case "$1" in
-		"winetricks")
-			$WINETRICKS_CMD "${@:2}"
-			;;
-		"basetricks")
-			winetricks_basetricks
-			;;
-		"wineserver")
-			$WINESERVER "${@:2}"
-			;;
+		"winetricks") $WINETRICKS_CMD "${@:2}" ;;
+		"basetricks") winetricks_basetricks ;;
+		"wineserver") $WINESERVER "${@:2}" ;;
 		"auto")
 			autolaunch_prepare "${@:2}"
 			$runwine "${AUTOLAUNCH[@]}" "${@:3}"
 			;;
-		*)
-			$runwine "$@"
-			;;
+		*) $runwine "$@" ;;
 	esac
 }
 
 runwine_umu() {
-
-	export WINESERVER="umu-run wineserver"
-	export WINETRICKS_CMD="umu-run winetricks"
-
 	local runwine="gamemoderun umu-run"
 
+	export WINESERVER="$runwine wineserver"
+	export WINETRICKS_CMD="$runwine winetricks"
+
 	case "$1" in
-		"winetricks")
-			${WINETRICKS_CMD} "${@:2}"
-			;;
-		"basetricks")
-			winetricks_basetricks
-			;;
-		"wineserver")
-			${WINESERVER} "${@:2}"
-			;;
+		"winetricks") ${WINETRICKS_CMD} "${@:2}" ;;
+		"basetricks") winetricks_basetricks ;;
+		"wineserver") ${WINESERVER} "${@:2}" ;;
 		"auto")
 			autolaunch_prepare "${@:2}"
 			$runwine "${AUTOLAUNCH[@]}" "${@:3}"
 			;;
-		*)
-			$runwine "$@"
-			;;
+		*) $runwine "$@" ;;
 	esac
 }
 
@@ -178,7 +156,7 @@ export STAGING_SHARED_MEMORY=1
 export ULIMIT_SIZE=1000000
 
 # Finally, sending arguments from this script to preffered runwine_* function
-runwine_umu "$@"
+runwine_native "$@"
 
 # Removing possible created shit in applications menu
 rm -f ~/.local/share/mime/packages/x-wine*

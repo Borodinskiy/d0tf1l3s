@@ -93,7 +93,9 @@
           "embed.reddit.com",
           "redditmedia.com",
           "redditstatic.com",
-          "rlcdn.com"
+          "rlcdn.com",
+          // Speedup downloading
+          "download.minecraft.net"
         ],
         "outbound": "direct"
       },
@@ -144,7 +146,9 @@
           "yt3.googleusercontent.com",
           "yt4.ggpht.com",
           "ytimg.com",
-          "ytimg.l.google.com"
+          "ytimg.l.google.com",
+          "download.nvidia.com",
+          "ciscobinary.openh264.org"
         ],
         "outbound": "remote"
       },

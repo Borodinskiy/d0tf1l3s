@@ -1,7 +1,6 @@
 #This is the base environment variables, that should be sourced to ~/.profile or/and ~/.zprofile file:
 
-export EDITOR='vim'
-export VISUAL='vim'
+export EDITOR="${EDITOR:-vim}"
 
 # MSI Afterburner 2
 export MANGOHUD='1'

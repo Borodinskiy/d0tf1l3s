@@ -8,23 +8,11 @@ HISTSIZE=100
 
 shopt -s autocd cdspell dirspell
 
-alias e="vim"
-alias se="sudo vim"
+alias e="$EDITOR"
+alias se="sudo $EDITOR"
 
 alias tor='tor -f "$HOME_WORKSPACE/share/torrc"'
 alias wget-stream="yt-dlp --proxy=socks5://127.0.0.1:9051"
-
-# "Edit editor config"
-alias ee='f "$HOME_WORKSPACE/config/nvim"'
-# Edit workspace configs
-alias ewp='f "$HOME_WORKSPACE"'
-# Edit nixos configs
-alias enix='f "$HOME/dev/n1x0s"'
-
-# Apply some nix configuration
-alias os-boot='$HOME/dev/n1x0s/activate.sh boot $(hostname)'
-alias os-dry-build='$HOME/dev/n1x0s/activate.sh dry-build $(hostname)'
-alias os-switch='$HOME/dev/n1x0s/activate.sh switch $(hostname)'
 
 # So no configs for this thing
 alias ip="ip --color"
@@ -90,7 +78,6 @@ precmd() {
 	else
 		export __NEW_LINE_BEFORE_PROMPT=1
 	fi
-	#__git_ps1
 }
 export PROMPT_COMMAND="precmd"
 alias clear="export __NEW_LINE_BEFORE_PROMPT=0 && clear"

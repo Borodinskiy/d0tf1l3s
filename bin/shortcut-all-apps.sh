@@ -10,8 +10,9 @@ RUNSCRIPT="run.sh"
 
 # Array of root directories where program categories located
 ROOTS=(
-	"$HOME"
 	"$HOME/programs"
+	"$HOME/myfiles/programs"
+	"/portablehub"
 	"/run/media/$USER/drive_d/programs"
 	"/run/media/$USER/drive_g/programs"
 	"/run/media/$USER/drive_p"
@@ -19,6 +20,7 @@ ROOTS=(
 
 # Subdirectories in roots with programs
 CATEGORIES=(
+	"Development" "dev"
 	"Game" "Utility"
 	"games" "game"
 	"utility" "util"
@@ -43,6 +45,7 @@ create_desktop() {
 	case "$category" in
 		"games" | "game") category="Game" ;;
 		"utility" | "util") category="Utility" ;;
+		"dev") category="Development" ;;
 	esac
 
 	# Last have the greatest priority
@@ -50,8 +53,10 @@ create_desktop() {
 	icon="application-x-executable"
 	[ -f "icon.ico" ] && icon="icon.ico"
 	[ -f "icon.png" ] && icon="icon.png"
+	[ -f "icon.svg" ] && icon="icon.svg"
 	[ -f "$name.ico" ] && icon="$name.ico"
 	[ -f "$name.png" ] && icon="$name.png"
+	[ -f "$name.svg" ] && icon="$name.svg"
 
 	# Creating file with filename and contents of basic desktop file
 	cat << EOF > "$tempdir/$filename"
@@ -116,6 +121,7 @@ for root in "${ROOTS[@]}"; do
 		echo "\`- $category:"
 
 		for path in "$root/$category"/*; do
+			[ -f "$path" ] && continue
 			name="$(basename "$path")"
 			printf "  \`- ["
 

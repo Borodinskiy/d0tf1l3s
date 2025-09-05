@@ -10,9 +10,16 @@ export STEAM_EXTRA_COMPAT_TOOLS_PATHS="${cfgHome}/.steam/root/compatibilitytools
 # Uniform open/save dialog for gtk apps if they have xdg desktop portal support
 export GTK_USE_PORTAL="1"
 
-# Home of workspace directory. It store configuration, include nix's itself
 # Extra binaries locations
-export PATH="$HOME/.local/bin:$HOME_WORKSPACE/bin:$PATH"
+pathes=(
+	"$HOME/.local/bin"
+	"$HOME_WORKSPACE/bin"
+	"$HOME/go/bin"
+)
+for path in "${pathes[@]}"; do
+	[ -d "$path" ] || continue
+	export PATH="$path:$PATH"
+done
 
 export QT_QPA_PLATFORMTHEME="kde"
 

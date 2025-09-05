@@ -54,6 +54,9 @@ runwine_native() {
 	# If Wine build is fully 64-bit then set WINE variable to match WINE64 value
 	[ ! -f "$WINE" ] && [ -f "$WINE64" ] \
 		&& export WINE="$WINE64"
+	# If wine64 is redundant by distro package and we had only "wine" binary
+	[ ! -f "$WINE64" ] \
+		&& export WINE64="$WINE"
 
 	local runwine="$wrappers $WINE"
 
@@ -93,6 +96,7 @@ runwine_umu() {
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 export WINEPREFIX="${WINEPREFIX:-$HOME/.wine}"
+export WINEARCH="${WINEARCH:-win64}"
 
 DLLOVERRIDES=(
 	"winemenubuilder.exe="

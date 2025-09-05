@@ -65,6 +65,7 @@ LINK_CONFIGS=(
 	"gamemode.ini"
 
 	"foot"
+	"kitty"
 	"yazi"
 
 	"xdg-desktop-portal"

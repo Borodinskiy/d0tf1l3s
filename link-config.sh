@@ -56,6 +56,9 @@ LINK_CONFIGS=(
 	"qutebrowser/greasemonkey"
 	"qutebrowser/quickmarks"
 
+	"niri"
+	"kanshi"
+
 	"sway"
 	"swaylock"
 	"waybar"
@@ -69,10 +72,17 @@ LINK_CONFIGS=(
 	"yazi"
 
 	"xdg-desktop-portal"
+	"chromium-flags.conf"
+	"code-flags.conf"
 )
 
 LINK_DATAS=(
 	"color-schemes/MinecraftNet.colors"
+)
+
+LINK_SYSTEMDS=(
+	"user/kanshi.service"
+	"user/niri-session.target"
 )
 
 SHELL_SOURCES_HOME=(
@@ -91,6 +101,10 @@ done
 
 for file in "${LINK_DATAS[@]}"; do
 	link "$HOME_WORKSPACE/config/$file" "$XDG_DATA_HOME/$file"
+done
+
+for file in "${LINK_SYSTEMDS[@]}"; do
+	link "$HOME_WORKSPACE/config/systemd/$file" "$XDG_CONFIG_HOME/systemd/$file"
 done
 
 for var in "${SHELL_VARS[@]}"; do

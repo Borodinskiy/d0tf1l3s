@@ -1,14 +1,13 @@
 {
 	"layer": "top",
-	"position": "top",
+	"position": "bottom",
 	"height": 25,
 /*	"margin-left": 10,
 	"margin-right": 10,
 	"margin-top": 10, */
 	"start_hidden": false,
 	"modules-left": [
-		"sway/workspaces", "sway/mode", "sway/window"
-/*		"hyprland/workspaces", "hyprland/window" */
+		"niri/workspaces", "niri/window"
 	],
 	"modules-center": [],
 	"modules-right": [
@@ -16,8 +15,7 @@
 		"memory", "temperature", "battery", "backlight",
 		"network", "bluetooth", "pulseaudio",
 
-		"sway/language",
-/*		"hyprland/language", */
+		"niri/language",
 
 		"clock", "idle_inhibitor", "group/session"
 	],
@@ -40,6 +38,10 @@
 		"icon": false,
 		"icon-size": 24,
 		"separate-outputs": true
+	},
+	"niri/window": {
+		"separate-outputs": true,
+		"icon": true
 	},
 	"group/trayhide": {
 		"orientation": "horizontal",
@@ -114,6 +116,11 @@
 		"format": "{shortDescription}",
 		"tooltip": false,
 		"on-click": "swaymsg input type:keyboard xkb_switch_layout next"
+	},
+	"niri/language": {
+		"format": "{short}",
+		"tooltip": false,
+		"on-click": "niri msg action switch-layout next"
 	},
 	"hyprland/language": {
 		"format-en": "ENG",

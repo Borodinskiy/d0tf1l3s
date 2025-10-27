@@ -1,0 +1,8 @@
+profile {
+	output eDP-1 enable
+}
+
+profile {
+	output eDP-1 disable
+	output "PNP(AOC) 24V2W1G5 0x00000881" enable
+}

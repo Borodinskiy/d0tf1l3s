@@ -30,8 +30,8 @@
 window#waybar {
 	background: @background;
 	border-radius: 0px;
-	font-family: "Hack", "Nerd Font";
-	font-size:   14px;
+	font-family: "Hack Nerd Font", "Hack", "Nerd Font";
+	font-size:   16px;
 }
 
 /* Window module background when no windows */

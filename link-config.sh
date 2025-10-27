@@ -81,8 +81,9 @@ LINK_DATAS=(
 )
 
 LINK_SYSTEMDS=(
+	"user/niri-exit.service"
 	"user/kanshi.service"
-	"user/niri-session.target"
+	"user/swayidle.service"
 )
 
 SHELL_SOURCES_HOME=(

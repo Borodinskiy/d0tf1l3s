@@ -1,11 +1,10 @@
 [Unit]
 Description=Dynamic output configuration for Wayland compositors
 Documentation=https://gitlab.freedesktop.org/emersion/kanshi
-BindsTo=niri-session.target
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
 
 [Service]
-Type=simple
 ExecStart=/usr/bin/kanshi
-
-[Install]
-WantedBy=niri-session.target
+Restart=on-failure

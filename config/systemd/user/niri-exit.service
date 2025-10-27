@@ -1,0 +1,9 @@
+[Unit]
+Description=Run command on Niri exit
+
+[Service]
+ExecStart=/usr/bin/pkill --uid "%U" ksecretd
+Type=oneshot
+
+[Install]
+WantedBy=niri.service

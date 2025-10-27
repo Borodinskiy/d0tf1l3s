@@ -4,16 +4,17 @@
 
 // Note that running niri as a session supports xdg-desktop-autostart.
 // spawn-at-startup "waybar"
-// To autostart something with this, like waybar, link:
-//  /usr/lib/systemd/user/waybar.service
-//  /usr/lib/systemd/user/plasma-polkit-agent.service
-// to:
-//  ~/.config/systemd/user/niri-session.target.wants/
-spawn-sh-at-startup "systemctl --user start niri-session.target"
+// To autostart something with systemd, like waybar, run:
+// systemctl --user add-wants niri.service waybar.service kanshi.service plasma-polkit-agent.service swayidle.service niri-exit.service
 
 prefer-no-csd
 
 screenshot-path null
+
+cursor {
+    xcursor-theme "Breeze_Light"
+    xcursor-size 36
+}
 
 // Input device configuration.
 // https://yalter.github.io/niri/Configuration:-Input
@@ -32,7 +33,7 @@ input {
         natural-scroll
     }
     mouse {
-        accel-speed 0.8
+        accel-speed -0.2
         accel-profile "flat"
     }
     warp-mouse-to-focus
@@ -118,6 +119,7 @@ binds {
     Ctrl+Alt+E hotkey-overlay-title="Open a RF Browser" { spawn "librewolf" "-P" "RF"; }
     Ctrl+Alt+Q hotkey-overlay-title="Open a Telegram" { spawn "Telegram"; }
     Ctrl+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "swaylock"; }
+    Ctrl+Alt+O hotkey-overlay-title="Open a LibreOffice" { spawn-sh "QT_QPA_PLATFORM=xcb libreoffice"; }
     Mod+E hotkey-overlay-title="Open File manager" { spawn "dolphin"; }
     Mod+D hotkey-overlay-title="Run an Application launcher" { spawn "fuzzel"; }
 
@@ -199,8 +201,8 @@ binds {
     Mod+Ctrl+U         { move-workspace-down; }
     Mod+Ctrl+I         { move-workspace-up; }
 
-    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
-    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Shift+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+Shift+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
     Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
     Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
 
@@ -209,8 +211,8 @@ binds {
     Mod+Ctrl+WheelScrollRight { move-column-right; }
     Mod+Ctrl+WheelScrollLeft  { move-column-left; }
 
-    Mod+Shift+WheelScrollDown      { focus-column-right; }
-    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+WheelScrollDown      { focus-column-right; }
+    Mod+WheelScrollUp        { focus-column-left; }
     Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
     Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
 

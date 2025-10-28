@@ -57,10 +57,12 @@ LINK_CONFIGS=(
 	"qutebrowser/quickmarks"
 
 	"niri"
+	"fuzzel"
 	"kanshi"
 
 	"sway"
 	"swaylock"
+	"mako"
 	"waybar"
 	"wofi"
 

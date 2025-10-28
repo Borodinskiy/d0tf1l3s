@@ -1,0 +1,14 @@
+on-button-left=invoke-default-action
+on-touch=invoke-default-action
+on-button-right=dismiss
+default-timeout=5555
+
+background-color=#141618
+text-color=#ffffff
+font=Noto Sans 12
+width=400
+height=128
+margin=8
+padding=4
+border-size=2
+border-color=#202326

@@ -7,6 +7,9 @@
 // To autostart something with systemd, like waybar, run:
 // systemctl --user add-wants niri.service waybar.service kanshi.service plasma-polkit-agent.service swayidle.service niri-exit.service
 
+spawn-sh-at-startup "wl-paste --type text  --watch cliphist store"
+spawn-sh-at-startup "wl-paste --type image --watch cliphist store"
+
 prefer-no-csd
 
 screenshot-path null
@@ -36,7 +39,6 @@ input {
         accel-speed -0.2
         accel-profile "flat"
     }
-    warp-mouse-to-focus
     // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
     focus-follows-mouse max-scroll-amount="0%"
 }
@@ -57,7 +59,7 @@ layout {
     }
     default-column-width { proportion 0.5; }
     focus-ring {
-        width 4
+        width 2
         active-color "#3daee9"
         inactive-color "#141618"
     }
@@ -114,17 +116,18 @@ binds {
     // Shows a list of important hotkeys (Mod-?).
     Mod+Shift+Slash { show-hotkey-overlay; }
 
+    Mod+D hotkey-overlay-title="Run an Application launcher" { spawn "fuzzel"; }
+    Mod+V hotkey-overlay-title="View clipboard history" { spawn-sh "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
+    Mod+E hotkey-overlay-title="Open a File manager" { spawn "dolphin"; }
     Ctrl+Alt+T hotkey-overlay-title="Open a Terminal" { spawn "kitty"; }
     Ctrl+Alt+W hotkey-overlay-title="Open a Browser" { spawn "librewolf"; }
-    Ctrl+Alt+E hotkey-overlay-title="Open a RF Browser" { spawn "librewolf" "-P" "RF"; }
+    Ctrl+Alt+E hotkey-overlay-title="Open a RF Browser" { spawn-sh "librewolf -P RF"; }
     Ctrl+Alt+Q hotkey-overlay-title="Open a Telegram" { spawn "Telegram"; }
-    Ctrl+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "swaylock"; }
-    Ctrl+Alt+O hotkey-overlay-title="Open a LibreOffice" { spawn-sh "QT_QPA_PLATFORM=xcb libreoffice"; }
-    Mod+E hotkey-overlay-title="Open File manager" { spawn "dolphin"; }
-    Mod+D hotkey-overlay-title="Run an Application launcher" { spawn "fuzzel"; }
+    Ctrl+Alt+O hotkey-overlay-title="Open a LibreOffice" { spawn-sh "SAL_USE_VCLPLUGIN=kf6 QT_QPA_PLATFORM=xcb libreoffice"; }
 
     Mod+B hotkey-overlay-title="Toggle waybar display" { spawn-sh "pkill -SIGUSR1 waybar"; }
     Mod+Ctrl+B hotkey-overlay-title="Restart waybar" { spawn-sh "systemctl --user restart waybar"; }
+    Ctrl+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "swaylock"; }
 
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
 
@@ -262,8 +265,8 @@ binds {
     Mod+Shift+Minus { set-window-height "-10%"; }
     Mod+Shift+Equal { set-window-height "+10%"; }
 
-    Mod+V       { toggle-window-floating; }
-    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+    Mod+Shift+V       { toggle-window-floating; }
+    Mod+Ctrl+V { switch-focus-between-floating-and-tiling; }
 
     Mod+W { toggle-column-tabbed-display; }
 
@@ -276,6 +279,9 @@ binds {
 
     Mod+Shift+E { quit; }
     Ctrl+Alt+Delete { quit; }
+
+    Ctrl+Alt+Home { spawn-sh "kitty -e cryptomount.sh"; }
+    Ctrl+Alt+End { spawn-sh "kitty -e cryptoclose.sh"; }
 
     Mod+Shift+P { power-off-monitors; }
 }

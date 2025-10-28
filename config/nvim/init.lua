@@ -7,35 +7,23 @@
 vim.g.have_nerd_font = true
 
 vim.opt.encoding = "utf8"
--- Line numbers
-vim.opt.number = true
+vim.opt.number = true -- line numbers
 vim.opt.relativenumber = true
--- Use mouse in terminal?
-vim.opt.mouse = "a"
--- Minimal number of screen lines to keep above and below the cursor
-vim.opt.scrolloff = 30
+vim.opt.mouse = "a" -- use mouse in terminal?
+vim.opt.cursorline = false -- highlight line with cursor
+vim.opt.scrolloff = 30 -- minimal number of screen lines to keep above and below the cursor
 vim.opt.ttyfast = true
 vim.opt.wildmode = "longest,list"
--- Use a swapfile for the buffer
-vim.opt.swapfile = true
--- Every wrapped line will continue visually indented (same amount of
--- space as the beginning of that line), thus preserving horizontal blocks
--- of text
-vim.opt.breakindent = true
+vim.opt.swapfile = true -- use a swapfile for the buffer
+vim.opt.breakindent = true -- every wrapped line will continue visually indented
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
--- Highlight search results in file
-vim.opt.hlsearch = true
--- While typing a search command, show where the pattern, as it was typed
-vim.opt.incsearch = true
--- Tab length in spaces
-vim.opt.tabstop = 4
--- Idk
+vim.opt.hlsearch = true -- highlight search results in file
+vim.opt.incsearch = true -- while typing a search command, show where the pattern, as it was typed
+vim.opt.tabstop = 4 -- tab length in spaces
 vim.opt.shiftwidth = 4
--- Tab in spaces equivalent
-vim.opt.softtabstop = 4
--- Use spaces instead of real tab
-vim.opt.expandtab = false
+vim.opt.softtabstop = 4 -- tab in spaces equivalent
+vim.opt.expandtab = false -- use spaces instead of real tab
 vim.opt.smarttab = true
 vim.opt.autoindent = true
 vim.opt.smartindent = true
@@ -49,8 +37,7 @@ vim.opt.listchars = {
 	multispace = "·", -- fake tabs
 	nbsp = "␣",       -- non-breakable space
 }
--- Highlight line with cursor
-vim.opt.cursorline = false
+
 -- Where vertical/horizontal split should go
 vim.opt.splitright = false
 vim.opt.splitbelow = true
@@ -66,13 +53,8 @@ vim.filetype.add {
 		[".*/vifmrc"] = "vim",
 		[".*/.*%.vifmrc"] = "vim",
 		[".*/waybar/config"] = "jsonc",
-
 		[".*/hypr/.*%.conf"] = "hyprlang",
-
 		["./sway/.*%.conf"]  = "i3config",
-		--		["./sway/.*%.sway"]  = "sway",
-		--		["./sway/config"]    = "sway",
-		--		["./sway/binds"]     = "sway",
 	},
 }
 
@@ -123,29 +105,33 @@ vim.keymap.set("n", "=", "<C-w>=")
 -- Make current edited file executable
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
+
 -------------------------------------------------------------------------
 -- Plugins
 -------------------------------------------------------------------------
 
--- Is lazy installed? No? Install it
--- Copied from https://lazy.folke.io/installation
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-	if vim.v.shell_error ~= 0 then
-		vim.api.nvim_echo({
-			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-			{ out, "WarningMsg" },
-			{ "\nPress any key to exit..." },
-		}, true, {})
-		vim.fn.getchar()
-		os.exit(1)
-	end
-end
-vim.opt.rtp:prepend(lazypath)
+local base16_palette = {
+	palette = {
+		base00 = "#232627",
+		base01 = "#2a2e32",
+		base02 = "#2d5c76",
+		base03 = "#7a7c7d",
+		base04 = "#cfcfc2",
+		base05 = "#cfcfc2",
+		base06 = "#3f8058",
+		base07 = "#3f8058",
+		base08 = "#27aeae",
+		base09 = "#f67400",
+		base0A = "#0099ff",
+		base0B = "#f44f4f",
+		base0C = "#3daee9",
+		base0D = "#3daee9",
+		base0E = "#27ae60",
+		base0F = "#3f8058"
+	}
+}
 
-require("lazy").setup({
+local plugins_desc = {
 	{ "brenoprata10/nvim-highlight-colors",
 		config = function()
 			vim.opt.termguicolors = true
@@ -155,108 +141,6 @@ require("lazy").setup({
 	{ "nmac427/guess-indent.nvim",
 		config = function()
 			require("guess-indent").setup({})
-		end,
-	},
-	{ "hrsh7th/nvim-cmp" },
-	{ "hrsh7th/cmp-nvim-lsp", },
-	{ "neovim/nvim-lspconfig",
-		config = function()
-			-- Language Server Protocol setup
-
-			-- Reserve a space in the gutter
-			-- This will avoid an annoying layout shift in the screen
-			vim.opt.signcolumn = "yes"
-
-			-- Add cmp_nvim_lsp capabilities settings to lspconfig
-			-- This should be executed before you configure any language server
-			local lspconfig_defaults = require("lspconfig").util.default_config
-			lspconfig_defaults.capabilities = vim.tbl_deep_extend(
-				"force",
-				lspconfig_defaults.capabilities,
-				require("cmp_nvim_lsp").default_capabilities()
-			)
-
-			-- This is where you enable features that only work
-			-- if there is a language server active in the file
-			vim.api.nvim_create_autocmd("LspAttach", {
-				desc = "LSP actions",
-				callback = function(event)
-					local opts = {buffer = event.buf}
-
-					vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
-					vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
-					vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-					vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-					vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-					vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
-					vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-					vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-					vim.keymap.set({"n", "x"}, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
-					vim.keymap.set("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-				end,
-			})
-
-			local lspconfig = require("lspconfig")
-
-			-- Enable (broadcasting) snippet capability for completion
-			-- Needed by css, html servers
-			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			capabilities.textDocument.completion.completionItem.snippetSupport = true
-
-			-- vscode-css-language-server
-			lspconfig.cssls.setup { capabilities = capabilities, }
-			-- vscode-eslint-language-server
-			lspconfig.eslint.setup({
-				on_attach = function(client, bufnr)
-					vim.api.nvim_create_autocmd("BufWritePre", {
-						buffer = bufnr,
-						command = "EslintFixAll",
-					})
-				end,
-			})
-			-- vscode-html-language-server
-			require'lspconfig'.html.setup({ capabilities = capabilities, })
-			-- vscode-json-language-server
-			require'lspconfig'.jsonls.setup({ capabilities = capabilities, })
-			-- vscode-markdown-language-server
-			-- TODO: do it
-			lspconfig.bashls.setup({})
-			lspconfig.csharp_ls.setup({})
-			lspconfig.nixd.setup({})
-			lspconfig.pylsp.setup({})
-			lspconfig.lua_ls.setup({
-				on_init = function(client)
-					if client.workspace_folders then
-						local path = client.workspace_folders[1].name
-						if vim.uv.fs_stat(path..'/.luarc.json') or vim.uv.fs_stat(path..'/.luarc.jsonc') then
-							return
-						end
-					end
-
-					client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-						runtime = {
-							-- Tell the language server which version of Lua you're using
-							-- (most likely LuaJIT in the case of Neovim)
-							version = 'LuaJIT'
-						},
-						-- Make the server aware of Neovim runtime files
-						workspace = {
-							checkThirdParty = false,
-							library = {
-								vim.env.VIMRUNTIME
-								-- Depending on the usage, you might want to add additional paths here.
-								-- "${3rd}/luv/library"
-								-- "${3rd}/busted/library",
-							}
-							-- or pull in all of 'runtimepath'. NOTE: this is a lot slower and will cause issues when working on your own configuration (see https://github.com/neovim/nvim-lspconfig/issues/3189)
-							-- library = vim.api.nvim_get_runtime_file("", true)
-						}
-					})
-				end,
-				settings = {
-					Lua = {},
-				},
-			})
 		end,
 	},
 	{ "echasnovski/mini.nvim",
@@ -290,25 +174,29 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 		end,
 	},
-})
+}
 
-require('mini.base16').setup({
-	palette = {
-		base00 = "#232627",
-		base01 = "#2a2e32",
-		base02 = "#2d5c76",
-		base03 = "#7a7c7d",
-		base04 = "#cfcfc2",
-		base05 = "#cfcfc2",
-		base06 = "#3f8058",
-		base07 = "#3f8058",
-		base08 = "#27aeae",
-		base09 = "#f67400",
-		base0A = "#0099ff",
-		base0B = "#f44f4f",
-		base0C = "#3daee9",
-		base0D = "#3daee9",
-		base0E = "#27ae60",
-		base0F = "#3f8058"
-	}
-})
+local is_root = vim.fn.system('id -u'):gsub('%s+', '') == '0'
+
+-- Is lazy installed? No? Install it
+-- Copied from https://lazy.folke.io/installation
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not is_root and not (vim.uv or vim.loop).fs_stat(lazypath) then
+	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+	if vim.v.shell_error ~= 0 then
+		vim.api.nvim_echo({
+			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+			{ out, "WarningMsg" },
+			{ "\nPress any key to exit..." },
+		}, true, {})
+		vim.fn.getchar()
+		os.exit(1)
+	end
+end
+
+if not is_root then
+	vim.opt.rtp:prepend(lazypath)
+	require("lazy").setup(plugins_desc)
+	require('mini.base16').setup(base16_palette)
+end

@@ -8,18 +8,20 @@
     "disable_cache": false,
     "disable_expire": false,
     // Not redirect direct packets
-    "final": "direct",
+    "final": "remote",
     "independent_cache": true,
     // So we can completly hide proxied websites
     "servers": [
       {
         "tag": "direct",
-        "address": "tcp://1.1.1.1",
+        "type": "tcp",
+        "server": "1.1.1.1",
         "detour": "direct"
       },
       {
         "tag": "remote",
-        "address": "tcp://1.1.1.1",
+        "type": "tcp",
+        "server": "1.1.1.1",
         "detour": "remote"
       }
     ],
@@ -68,7 +70,7 @@
   "route": {
     "auto_detect_interface": true,
     // Non matched traffic bypasses proxy
-    "final": "direct",
+    "final": "remote",
     "rules": [
       {
         "action": "sniff"

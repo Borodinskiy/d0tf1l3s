@@ -101,6 +101,7 @@ export WINEARCH="${WINEARCH:-win64}"
 DLLOVERRIDES=(
 	"winemenubuilder.exe="
 
+	# DirectX
 	"d3dcompiler_43.dll"
 	"d3dcompiler_46.dll"
 	"d3dcompiler_47.dll"
@@ -113,6 +114,10 @@ DLLOVERRIDES=(
 	"d3d9.dll"
 	"dinput8.dll"
 	"dxgi.dll"
+
+	# Placebos
+	"winmm.dll"
+
 	# Last entry contains load order which applies to all previous dlls that not have it
 	"dstorage.dll=n,b"
 )

@@ -12,42 +12,6 @@ HOME_WORKSPACE="${HOME_WORKSPACE:-$(realpath "$(dirname "$0")")}"
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 
-link() {
-	in="$1"
-	out="$2"
-
-	unlink "$out" &> /dev/null
-	if [ -d "$out" ] || [ -f "$out" ]; then
-		echo "Error: $out is not a link. Manually backup this dir/file or delete it"
-		return
-	fi
-
-	# For situations, when links nvim/init.lua instead of full nvim directory
-	targetdir="$(dirname "$out")"
-	[ ! -d "$targetdir" ] && mkdir -p "$targetdir"
-	ln -s "$in" "$out"
-}
-
-shell_source() {
-	in="$1"
-	out="$2"
-
-	if [ ! -f "$out" ] || [ "$(grep "source \"$in\"" < "$out")" == "" ]; then
-		echo "source \"$in\"" >> "$out"
-	fi
-}
-
-shell_var() {
-	in="$1"
-	out="$2"
-
-	if [ ! -f "$out" ] || [ "$(grep "export $in" < "$out")" == "" ]; then
-		echo "export $in" >> "$out"
-	fi
-}
-
-echo "HOME_WORKSPACE is $HOME_WORKSPACE"
-
 LINK_CONFIGS=(
 	"nvim/init.lua"
 
@@ -98,6 +62,51 @@ SHELL_VARS=(
 	"HOME_WORKSPACE=\"$HOME_WORKSPACE\""
 )
 
+link() {
+	in="$1"
+	out="$2"
+
+	unlink "$out" &> /dev/null
+	if [ -d "$out" ] || [ -f "$out" ]; then
+		echo "Error: $out is not a link. Manually backup this dir/file or delete it"
+		return
+	fi
+
+	# For situations, when links nvim/init.lua instead of full nvim directory
+	targetdir="$(dirname "$out")"
+	[ ! -d "$targetdir" ] && mkdir -p "$targetdir"
+	ln -s "$in" "$out"
+}
+
+shell_source() {
+	in="$1"
+	out="$2"
+
+	if [ ! -f "$out" ] || [ "$(grep "source \"$in\"" < "$out")" == "" ]; then
+		echo "source \"$in\"" >> "$out"
+	fi
+}
+
+shell_var() {
+	in="$1"
+	out="$2"
+
+	if [ ! -f "$out" ] || [ "$(grep "export $in" < "$out")" == "" ]; then
+		echo "export $in" >> "$out"
+	fi
+}
+
+echo "HOME_WORKSPACE is $HOME_WORKSPACE"
+
+menus="/etc/xdg/menus"
+if [ -f "$menus/plasma-applications.menu" ]; then
+	link "$menus/plasma-applications.menu" "$XDG_CONFIG_HOME/menus/applications.menu"
+elif [ -f "$menus/arch-applications.menu" ]; then
+	link "$menus/arch-applications.menu" "$XDG_CONFIG_HOME/menus/applications.menu"
+else
+	echo "No suitable .menu file present in $menus"
+fi
+
 for file in "${LINK_CONFIGS[@]}"; do
 	link "$HOME_WORKSPACE/config/$file" "$XDG_CONFIG_HOME/$file"
 done
@@ -119,3 +128,5 @@ for file in "${SHELL_SOURCES_HOME[@]}"; do
 	shell_source "$HOME_WORKSPACE/config/$file" "$HOME/.$file"
 	shell_source "$HOME/.$file" "$HOME/.bash_profile"
 done
+
+echo "Finished"

@@ -106,6 +106,10 @@ window-rule {
     match app-id=".blueman-manager-wrapped"
     match app-id="pavucontrol"
     match app-id="waypaper"
+    match app-id="org.freedesktop.impl.portal.desktop.kde"
+    match app-id="soffice.bin" is-floating=true
+    match app-id="soffice.bin" title="Open"
+    match app-id="soffice.bin" title="Export"
 
     open-floating true
     default-column-width { proportion 0.5; }
@@ -113,7 +117,7 @@ window-rule {
 }
 
 // Steam notifications fix
-window-rule {
+/-window-rule {
     match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
     default-floating-position x=10 y=10 relative-to="bottom-right"
 }
@@ -136,7 +140,7 @@ binds {
     Ctrl+Alt+W hotkey-overlay-title="Open a Browser" { spawn "librewolf"; }
     Ctrl+Alt+E hotkey-overlay-title="Open a RF Browser" { spawn-sh "librewolf -P RF"; }
     Ctrl+Alt+Q hotkey-overlay-title="Open a Telegram" { spawn "Telegram"; }
-    Ctrl+Alt+O hotkey-overlay-title="Open a LibreOffice" { spawn-sh "SAL_USE_VCLPLUGIN=kf6 QT_QPA_PLATFORM=xcb libreoffice"; }
+    Ctrl+Alt+O hotkey-overlay-title="Open a LibreOffice" { spawn-sh "QT_QPA_PLATFORM=xcb SAL_USE_VCLPLUGIN=kf6 libreoffice"; }
 
     Mod+B hotkey-overlay-title="Toggle waybar display" { spawn-sh "pkill -SIGUSR1 waybar"; }
     Mod+Ctrl+B hotkey-overlay-title="Restart waybar" { spawn-sh "systemctl --user restart waybar"; }
@@ -218,20 +222,26 @@ binds {
     Mod+Ctrl+U         { move-workspace-down; }
     Mod+Ctrl+I         { move-workspace-up; }
 
-    Mod+Shift+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
-    Mod+Shift+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
-    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
-    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+    //Mod+Ctrl+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    //Mod+Ctrl+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    //Mod+Shift+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    //Mod+Shift+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+
+    Mod+Ctrl+WheelScrollUp { focus-monitor-left; }
+    Mod+Ctrl+WheelScrollDown  { focus-monitor-right; }
+
+    Mod+Shift+Ctrl+WheelScrollUp { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+WheelScrollDown { move-column-to-monitor-right; }
 
     Mod+WheelScrollRight      { focus-column-right; }
     Mod+WheelScrollLeft       { focus-column-left; }
-    Mod+Ctrl+WheelScrollRight { move-column-right; }
-    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+    Mod+Shift+WheelScrollRight { move-column-right; }
+    Mod+Shift+WheelScrollLeft  { move-column-left; }
 
     Mod+WheelScrollDown      { focus-column-right; }
     Mod+WheelScrollUp        { focus-column-left; }
-    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
-    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+    Mod+Shift+WheelScrollDown { move-column-right; }
+    Mod+Shift+WheelScrollUp   { move-column-left; }
 
     Mod+TouchpadScrollDown { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02+"; }
     Mod+TouchpadScrollUp   { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.02-"; }

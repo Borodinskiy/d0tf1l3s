@@ -144,8 +144,8 @@
 			"activated": "", 
 			"deactivated": "󰒲"
 		},
-		"tooltip-format-activated": "Idle action disabled",
-		"tooltip-format-deactivated": "Idle action allowed"
+		"tooltip-format-activated": "Stay awake",
+		"tooltip-format-deactivated": "Idling allowed"
 	},
 	"group/session": {
 		"orientation": "horizontal",
@@ -183,7 +183,7 @@
 	"custom/sleep": {
 		"format": "󰤄",
 		"tooltip-format": "sleep",
-		"on-click": "swaynag -t warning -m 'Suspend system?' -B 'Sleep' 'systemctl suspend'"
+		"on-click": "systemctl suspend"
 	},
 	"custom/screenlock": {
 		"format": "󰌾",

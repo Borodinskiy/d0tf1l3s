@@ -1,0 +1,10 @@
+[Unit]
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+# TODO: $XDG_CONFIG_HOME is unsupported here
+ExecStart=%h/.config/swaybg/wallpaper.sh
+RuntimeMaxSec=15m
+Restart=always

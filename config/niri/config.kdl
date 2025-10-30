@@ -145,6 +145,7 @@ binds {
     Mod+B hotkey-overlay-title="Toggle waybar display" { spawn-sh "pkill -SIGUSR1 waybar"; }
     Mod+Ctrl+B hotkey-overlay-title="Restart waybar" { spawn-sh "systemctl --user restart waybar"; }
     Ctrl+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "swaylock"; }
+    Mod+Shift+W hotkey-overlay-title="Refresh Wallpaper" cooldown-ms=2000 { spawn-sh "systemctl --user restart swaybg"; }
 
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
     Ctrl+Shift+Escape hotkey-overlay-title="Run process explorer" { spawn-sh "kitty -e htop"; }

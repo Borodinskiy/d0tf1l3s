@@ -25,6 +25,7 @@ LINK_CONFIGS=(
 	"kanshi"
 
 	"sway"
+	"swaybg"
 	"swaylock"
 	"mako"
 	"waybar"
@@ -50,6 +51,7 @@ LINK_SYSTEMDS=(
 	"user/niri-exit.service"
 	"user/kanshi.service"
 	"user/swayidle.service"
+	"user/swaybg.service"
 )
 
 SHELL_SOURCES_HOME=(

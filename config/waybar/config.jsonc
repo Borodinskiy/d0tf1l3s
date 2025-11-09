@@ -1,5 +1,5 @@
 {
-	"layer": "top",
+	"layer": "bottom", // Fix for tooltips overlap from windows
 	"position": "bottom",
 	"height": 25,
 /*	"margin-left": 10,
@@ -85,7 +85,7 @@
 	"network": {
 		"format-wifi": "{icon} {signalStrength}%",
 		"tooltip-format-wifi": "{ifname}: {essid} ({ipaddr}/{cidr})",
-		"format-ethernet": " {ifname}",
+		"format-ethernet": " eth",
 		"tooltip-format-ethernet": "{ifname}: {ipaddr}/{cidr}",
 		"format-disconnected": "<span color='gray'>󰀝</span>", //"󰀝 off",
 		"format-icons": [ "󰤯", "󰤟", "󰤢", "󰤢", "󰤥", "󰤨" ],
@@ -100,6 +100,7 @@
 		"format-on": "󰂯",
 		"format-off": "<span color='gray'>󰂲</span>",
 		"format-disabled": "",
+		"format-no-controller": "",
 		"tooltip": true,
 		"on-click": "",
 		"on-click-right": "bluetoothctl power on",

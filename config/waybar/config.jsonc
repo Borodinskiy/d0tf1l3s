@@ -7,7 +7,7 @@
 	"margin-top": 10, */
 	"start_hidden": false,
 	"modules-left": [
-		"niri/workspaces", "niri/window"
+		"hyprland/workspaces", "hyprland/window"
 	],
 	"modules-center": [],
 	"modules-right": [
@@ -15,7 +15,7 @@
 		"memory", "temperature", "battery", "backlight",
 		"network", "bluetooth", "pulseaudio",
 
-		"niri/language",
+		"hyprland/language",
 
 		"clock", "idle_inhibitor", "group/session"
 	],

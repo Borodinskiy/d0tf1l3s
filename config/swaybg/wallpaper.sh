@@ -1,2 +1,9 @@
 #!/usr/bin/env bash
-swaybg -i "$(find "$HOME_MYFILES/sync/multimedia/wallpapers/16x9" -type f | sort -R | head -n 1)"
+case "$1" in
+	"--random")
+		swaybg -i "$(find "$HOME_MYFILES/sync/multimedia/wallpapers/sigmo" -type f | sort -R | head -n 1)"
+		;;
+	"--single")
+		swaybg -i "$HOME_MYFILES/sync/multimedia/wallpapers/sigmo/b-832.jpg"
+		;;
+esac

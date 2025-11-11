@@ -4,8 +4,9 @@
 
 // Note that running niri as a session supports xdg-desktop-autostart.
 // spawn-at-startup "waybar"
-// To autostart something with systemd, like waybar, run:
-// systemctl --user add-wants niri.service waybar.service kanshi.service plasma-polkit-agent.service swayidle.service mako.service niri-exit.service
+
+spawn-sh-at-startup "systemctl --user start idle-niri plasma-polkit-agent"
+spawn-sh-at-startup "systemctl --user start mako waybar swaybg-single"
 
 spawn-sh-at-startup "wl-paste --type text  --watch cliphist store"
 spawn-sh-at-startup "wl-paste --type image --watch cliphist store"
@@ -105,10 +106,14 @@ binds {
     Ctrl+Alt+Q hotkey-overlay-title="Open a Telegram" { spawn "Telegram"; }
     Ctrl+Alt+O hotkey-overlay-title="Open a LibreOffice" { spawn-sh "QT_QPA_PLATFORM=xcb SAL_USE_VCLPLUGIN=kf6 libreoffice"; }
 
-    Mod+B hotkey-overlay-title="Toggle waybar display" { spawn-sh "pkill -SIGUSR1 waybar"; }
-    Mod+Ctrl+B hotkey-overlay-title="Restart waybar" { spawn-sh "systemctl --user restart waybar"; }
-    Ctrl+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "swaylock"; }
-    Mod+Shift+W hotkey-overlay-title="Refresh Wallpaper" cooldown-ms=2000 { spawn-sh "systemctl --user restart swaybg"; }
+    Mod+Shift+W hotkey-overlay-title="Refresh single wallpaper" cooldown-ms=2000 { spawn-sh " systemctl stop --user swaybg-random; systemctl restart --user swaybg-single"; }
+    Mod+Ctrl+W  hotkey-overlay-title="Refresh slideshow wallpaper" cooldown-ms=2000 { spawn-sh "systemctl stop --user swaybg-single; systemctl restart --user swaybg-random"; }
+
+    Mod+Ctrl+B hotkey-overlay-title="Restart waybar"        { spawn-sh "systemctl --user restart waybar"; }
+    Mod+B      hotkey-overlay-title="Toggle waybar display" { spawn-sh "pkill -SIGUSR1 waybar"; }
+
+    Ctrl+Alt+L  hotkey-overlay-title="Lock the Screen" { spawn "swaylock"; }
+    Mod+Shift+P hotkey-overlay-title="Toggle monitors power" { power-off-monitors; }
 
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
     Ctrl+Shift+Escape hotkey-overlay-title="Run process explorer" { spawn-sh "kitty -e htop"; }
@@ -266,12 +271,11 @@ binds {
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
     Mod+Shift+E { quit; }
+    Mod+Shift+Backspace { quit; }
     Ctrl+Alt+Delete { quit; }
 
     Ctrl+Alt+Home { spawn-sh "kitty -e cryptomount.sh"; }
     Ctrl+Alt+End { spawn-sh "kitty -e cryptoclose.sh"; }
-
-    Mod+Shift+P { power-off-monitors; }
 }
 
 // https://yalter.github.io/niri/Configuration:-Window-Rules

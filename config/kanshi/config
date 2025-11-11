@@ -4,7 +4,21 @@ profile {
 
 profile {
 	output eDP-1 disable
-	output "PNP(AOC) 24V2W1G5 0x00000881" enable
+	output "PNP(AOC) 24V2W1G5 0x00000881" enable {
+		enable
+		position 0,0
+		mode 2560x1440
+		scale 1.5
+	}
+}
+
+profile {
+	output "Philips Consumer Electronics Company PHL 276E8V UK82419002265" {
+		enable
+		position 0,0
+		mode 3840x2160
+		scale 1.5
+	}
 }
 
 profile {

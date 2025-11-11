@@ -48,10 +48,12 @@ LINK_DATAS=(
 )
 
 LINK_SYSTEMDS=(
-	"user/niri-exit.service"
+	"user/idle-hyprland.service"
+	"user/idle-niri.service"
 	"user/kanshi.service"
-	"user/swayidle.service"
-	"user/swaybg.service"
+	"user/niri-exit.service"
+	"user/swaybg-random.service"
+	"user/swaybg-single.service"
 )
 
 SHELL_SOURCES_HOME=(

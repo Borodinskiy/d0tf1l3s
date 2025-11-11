@@ -20,6 +20,7 @@ LINK_CONFIGS=(
 	"qutebrowser/greasemonkey"
 	"qutebrowser/quickmarks"
 
+	"hypr"
 	"niri"
 	"fuzzel"
 	"kanshi"

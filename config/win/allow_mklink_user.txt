@@ -1,3 +1,0 @@
-# gpedit.msc;
-# Computer Configuration > Windows Settings > Security Settings > Local Policies > User Right Assignment:
-Create symbolic links

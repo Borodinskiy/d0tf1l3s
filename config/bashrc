@@ -31,7 +31,7 @@ alias lha="ls -lha"
 # Music shuffle
 
 genplaylist() {
-	find "$1" -type f \
+	find "$1/" -type f \
 	-not -iname "*.png" -not -iname "*.jpg" -not -iname "*.7z" \
 	-not -iname "*.bak" -not -wholename "*.stversions*" \
 	| sort -R > /tmp/songlist.txt

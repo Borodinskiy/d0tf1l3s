@@ -2,8 +2,6 @@
 
 export EDITOR="${EDITOR:-vim}"
 
-# MSI Afterburner 2
-export MANGOHUD='1'
 export STEAM_EXTRA_COMPAT_TOOLS_PATHS="${cfgHome}/.steam/root/compatibilitytools.d"
 
 # Uniform open/save dialog for gtk apps if they have xdg desktop portal support

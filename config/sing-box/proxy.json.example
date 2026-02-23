@@ -1,6 +1,7 @@
 {
   "type": "vless",
-  "tag": "remote",
+  "tag": "out-remote",
+  "domain_resolver": "dns-remote",
   "server": "",
   "server_port": 1234,
   "uuid": "",

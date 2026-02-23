@@ -1,44 +1,32 @@
 { // Default settings should be at least compatible with linux, android and windows
   "log": {
-    "level": "fatal",
+    "level": "warn",
     "timestamp": true
   },
   "dns": {
-    "cache_capacity": 0,
+    "final": "dns-direct",
+    "strategy": "ipv4_only",
     "disable_cache": false,
     "disable_expire": false,
-    // Not redirect direct packets
-    "final": "remote",
-    "independent_cache": true,
-    // So we can completly hide proxied websites
+    "independent_cache": false,
     "servers": [
       {
-        "tag": "direct",
-        "type": "tcp",
-        "server": "1.1.1.1",
-        "detour": "direct"
+        "tag": "dns-direct",
+        "type": "udp",
+        "server": "1.1.1.1"
       },
       {
-        "tag": "remote",
-        "type": "tcp",
-        "server": "1.1.1.1",
-        "detour": "remote"
+        "tag": "dns-remote",
+        "type": "udp",
+        "server": "1.1.1.1"
       }
-    ],
-    // We can use rule filter by packet outbound
-    // to find out which goes into proxy
-    "rules": [
-      {
-        "outbound": "remote",
-        "server": "remote"
-      }
-    ],
-    "strategy": "ipv4_only"
+    ]
   },
   "inbounds": [
     {
       "type": "tun",
-      "tag": "tun-in",
+      "tag": "in-tun",
+      "interface_name": "proxifier_tun",
       "mtu": 1400,
       "address": [
         "172.16.0.1/30",
@@ -47,15 +35,13 @@
       "auto_route": true,
       "auto_redirect": false,
       "strict_route": true,
-      "stack": "gvisor",
-      "sniff": true
+      "stack": "gvisor"
     },
     { // SOCKS5/HTTP proxy server
       "type": "mixed",
-      "tag": "proxy-in",
+      "tag": "in-proxy",
       "listen": "127.0.0.1",
-      "listen_port": 9051,
-      "sniff_override_destination": true
+      "listen_port": 9051
     }
   ],
   "outbounds": [
@@ -64,28 +50,28 @@
     "<OUTBOUND_REMOTE>",
     { // Bypass
       "type": "direct",
-      "tag": "direct"
+      "tag": "out-direct"
     }
   ],
   "route": {
     "auto_detect_interface": true,
     // Non matched traffic bypasses proxy
-    "final": "remote",
+    "final": "out-direct",
+    "default_domain_resolver": {
+      "server": "dns-direct",
+      "strategy": "ipv4_only"
+    },
     "rules": [
-      {
+      { // For dns redirect
         "action": "sniff"
       },
       {
         "protocol": "dns",
         "action": "hijack-dns"
       },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
       { // Yes
         "protocol": "bittorrent",
-        "outbound": "direct"
+        "outbound": "out-direct"
       },
       { // Some web sites hate proxy
         "domain_suffix": [
@@ -99,9 +85,13 @@
           // Speedup downloading
           "download.minecraft.net"
         ],
-        "outbound": "direct"
+        "outbound": "out-direct"
       },
-      {
+      { // All traffic that comes into proxy server... Will be sent to remote
+        "inbound": "in-proxy",
+        "outbound": "out-remote"
+      },
+      { // Force remote for domains
         "domain_suffix": [
           "7tv.app",
           "7tv.io",
@@ -152,11 +142,7 @@
           "download.nvidia.com",
           "ciscobinary.openh264.org"
         ],
-        "outbound": "remote"
-      },
-      { // All traffic that comes into proxy server... Will be proxied
-        "inbound": "proxy-in",
-        "outbound": "remote"
+        "outbound": "out-remote"
       },
       { // Android apps
         "package_name": [
@@ -166,13 +152,14 @@
           "com.aurora.store",
           "com.discord"
         ],
-        "outbound": "remote"
+        "outbound": "out-remote"
       },
       { // OS processes
-        "inbound": "tun-in",
+        "inbound": "in-tun",
         "process_name": [
           ".Discord-wrappe",
           ".Discord-wrapped",
+          "/app/discord/Discord",
           "Discord",
           "discord",
           "Discord.exe",
@@ -180,7 +167,7 @@
           "songrec",
           "songrec.exe"
         ],
-        "outbound": "remote"
+        "outbound": "out-remote"
       }
     ]
   }

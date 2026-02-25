@@ -4,7 +4,7 @@
     "timestamp": true
   },
   "dns": {
-    "final": "dns-direct",
+    "final": "dns-remote",
     "strategy": "ipv4_only",
     "disable_cache": false,
     "disable_expire": false,
@@ -23,20 +23,6 @@
     ]
   },
   "inbounds": [
-    {
-      "type": "tun",
-      "tag": "in-tun",
-      "interface_name": "proxifier_tun",
-      "mtu": 1400,
-      "address": [
-        "172.16.0.1/30",
-        "fd00::1/126"
-      ],
-      "auto_route": true,
-      "auto_redirect": false,
-      "strict_route": true,
-      "stack": "gvisor"
-    },
     { // SOCKS5/HTTP proxy server
       "type": "mixed",
       "tag": "in-proxy",
@@ -45,10 +31,7 @@
     }
   ],
   "outbounds": [
-    // Proxy. Inserts here after config generation
-    // Example in proxy.json.example
-    "<OUTBOUND_REMOTE>",
-    { // Bypass
+    { // For direct connections without hiding
       "type": "direct",
       "tag": "out-direct"
     }
@@ -83,7 +66,8 @@
           "redditstatic.com",
           "rlcdn.com",
           // Speedup downloading
-          "download.minecraft.net"
+          "download.minecraft.net",
+          "mirror.team-host.ru"
         ],
         "outbound": "out-direct"
       },
@@ -140,7 +124,10 @@
           "ytimg.com",
           "ytimg.l.google.com",
           "download.nvidia.com",
-          "ciscobinary.openh264.org"
+          "ciscobinary.openh264.org",
+          "dl.flathub.org",
+          "deb.sagernet.org",
+          "download.vscodium.com"
         ],
         "outbound": "out-remote"
       },
@@ -160,6 +147,7 @@
           ".Discord-wrappe",
           ".Discord-wrapped",
           "/app/discord/Discord",
+          "com.discordapp.Discord",
           "Discord",
           "discord",
           "Discord.exe",

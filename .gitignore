@@ -1,4 +1,4 @@
 quickmarks
-proxy.json
+outbound-remote.json
 share/*
 !share/*.example

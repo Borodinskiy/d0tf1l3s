@@ -1,0 +1,10 @@
+{
+	"inbounds": [
+		{ // SOCKS5/HTTP proxy server
+			"type": "mixed",
+			"tag": "in-proxy",
+			"listen": "127.0.0.1",
+			"listen_port": 9051
+		}
+	]
+}

@@ -1,0 +1,8 @@
+{
+  "outbounds": [
+    { // For direct connections without hiding
+      "type": "direct",
+      "tag": "out-direct"
+    }
+  ]
+}

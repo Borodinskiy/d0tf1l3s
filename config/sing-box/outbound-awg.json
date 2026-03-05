@@ -1,0 +1,10 @@
+{
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "out-remote",
+      "domain_resolver": "dns-remote",
+      "bind_interface": "awg0"
+    }
+  ]
+}

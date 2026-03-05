@@ -12,30 +12,16 @@
     "servers": [
       {
         "tag": "dns-direct",
-        "type": "udp",
+        "type": "h3",
         "server": "1.1.1.1"
       },
       {
         "tag": "dns-remote",
-        "type": "udp",
+        "type": "h3",
         "server": "1.1.1.1"
       }
     ]
   },
-  "inbounds": [
-    { // SOCKS5/HTTP proxy server
-      "type": "mixed",
-      "tag": "in-proxy",
-      "listen": "127.0.0.1",
-      "listen_port": 9051
-    }
-  ],
-  "outbounds": [
-    { // For direct connections without hiding
-      "type": "direct",
-      "tag": "out-direct"
-    }
-  ],
   "route": {
     "auto_detect_interface": true,
     // Non matched traffic bypasses proxy
@@ -127,7 +113,8 @@
           "ciscobinary.openh264.org",
           "dl.flathub.org",
           "deb.sagernet.org",
-          "download.vscodium.com"
+          "download.vscodium.com",
+          "golang.org"
         ],
         "outbound": "out-remote"
       },

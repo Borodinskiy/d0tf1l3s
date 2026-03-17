@@ -46,7 +46,9 @@
         "inbound": "in-tun",
         "process_name": [
           "xray",
-          "xray.exe"
+          "xray.exe",
+          "wireproxy",
+          "wireproxy.exe"
         ],
         "outbound": "out-direct"
       },
@@ -140,20 +142,18 @@
       { // OS processes
         "inbound": "in-tun",
         "process_name": [
+          "Discord.exe",
           ".Discord-wrappe",
           ".Discord-wrapped",
           "/app/discord/Discord",
           "com.discordapp.Discord",
           "Discord",
-          "Discord.exe",
-          "songrec",
           "songrec.exe",
+          "songrec",
           "librewolf.exe",
+          "librewolf",
           "telegram.exe",
-          "DeltaChat.exe",
-          "deltachat-rpc-server.exe",
-          "deltachat-rpc-server",
-          "deltachat",
+          "Telegram",
           "steam.exe",
           "steamwebhelper.exe",
           "streaming_client.exe",

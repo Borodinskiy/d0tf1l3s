@@ -122,7 +122,8 @@
           "dl.flathub.org",
           "deb.sagernet.org",
           "download.vscodium.com",
-          "golang.org"
+          "golang.org",
+          "files.holarse-linuxgaming.de"
         ],
         "outbound": "out-remote"
       },
@@ -152,7 +153,15 @@
           "DeltaChat.exe",
           "deltachat-rpc-server.exe",
           "deltachat-rpc-server",
-          "deltachat"
+          "deltachat",
+          "steam.exe",
+          "steamwebhelper.exe",
+          "streaming_client.exe",
+          "SteamService.exe",
+          "steam",
+          "steamwebhelper",
+          "streaming_client",
+          "SteamService"
         ],
         "outbound": "out-remote"
       }

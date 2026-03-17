@@ -31,7 +31,6 @@ case "$ROUTING_TYPE" in
 			"config.json"
 			"outbound-direct.json"
 			"outbound-remote.json"
-			"proxy-server.json"
 			"tun-linux.json"
 		)
 		;;

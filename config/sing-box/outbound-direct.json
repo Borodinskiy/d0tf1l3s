@@ -2,7 +2,8 @@
   "outbounds": [
     { // For direct connections without hiding
       "type": "direct",
-      "tag": "out-direct"
+      "tag": "out-direct",
+      "domain_resolver": "dns-direct"
     }
   ]
 }

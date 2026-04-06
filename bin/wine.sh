@@ -77,6 +77,7 @@ runwine_umu() {
 
 	export WINESERVER="$runwine wineserver"
 	export WINETRICKS_CMD="$runwine winetricks"
+	export PROTONPATH="$HOME/.local/share/Steam/compatibilitytools.d/GE-Proton"
 
 	case "$1" in
 		"winetricks") ${WINETRICKS_CMD} "${@:2}" ;;
@@ -101,14 +102,26 @@ export WINEARCH="${WINEARCH:-win64}"
 DLLOVERRIDES=(
 	"winemenubuilder.exe="
 
+	"bink2w64"
+	"dxil"
+	"igxess"
+	"libxess"
+	"XeFX"
+	"XeFX_Loader"
+	"nvngx_dlss"
+	"oo2core_7_win64"
+
 	# DirectX
 	"d3dcompiler_43.dll"
 	"d3dcompiler_46.dll"
 	"d3dcompiler_47.dll"
+	"dxcompiler"
 	"d3dcsx_46.dll"
 	"d3d10core.dll"
 	"doge64.dll"
 	"steam_api_ext64.dll"
+	"steam_api64"
+	"steamclient64"
 	"d3d11.dll"
 	"d3d8.dll"
 	"d3d9.dll"
@@ -165,7 +178,7 @@ export STAGING_SHARED_MEMORY=1
 export ULIMIT_SIZE=1000000
 
 # Finally, sending arguments from this script to preffered runwine_* function
-runwine_native "$@"
+runwine_umu "$@"
 
 # Removing possible created shit in applications menu
 rm -f ~/.local/share/mime/packages/x-wine*

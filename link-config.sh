@@ -13,35 +13,29 @@ XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 
 LINK_CONFIGS=(
+	"MangoHud"
+	"chromium-flags.conf"
+	"code-flags.conf"
+	"firejail"
+	"foot"
+	"fuzzel"
+	"gamemode.ini"
+	"hypr"
+	"kanshi"
+	"kitty"
+	"mako"
+	"niri"
 	"nvim/init.lua"
-
 	"qutebrowser/bookmarks"
 	"qutebrowser/config.py"
 	"qutebrowser/greasemonkey"
 	"qutebrowser/quickmarks"
-
-	"hypr"
-	"niri"
-	"fuzzel"
-	"kanshi"
-
 	"sway"
 	"swaybg"
 	"swaylock"
-	"mako"
 	"waybar"
 	"wofi"
-
-	"MangoHud"
-	"gamemode.ini"
-
-	"foot"
-	"kitty"
-	"yazi"
-
 	"xdg-desktop-portal"
-	"chromium-flags.conf"
-	"code-flags.conf"
 )
 
 LINK_DATAS=(

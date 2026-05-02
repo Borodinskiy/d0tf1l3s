@@ -174,6 +174,7 @@ local plugins_desc = {
 			vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 		end,
 	},
+	{ "imsnif/kdl.vim" },
 }
 
 local is_root = vim.fn.system('id -u'):gsub('%s+', '') == '0'

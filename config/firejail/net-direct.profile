@@ -5,4 +5,4 @@
 # So direct connections will work properly
 include net-direct.local
 
-dns 8.8.8.8
+dns 1.1.1.1

@@ -2,7 +2,7 @@
 
 export EDITOR="${EDITOR:-vim}"
 
-export STEAM_EXTRA_COMPAT_TOOLS_PATHS="${cfgHome}/.steam/root/compatibilitytools.d"
+export STEAM_EXTRA_COMPAT_TOOLS_PATHS="${HOME:?}/.steam/root/compatibilitytools.d"
 
 # Uniform open/save dialog for gtk apps if they have xdg desktop portal support
 export GTK_USE_PORTAL="1"
@@ -12,6 +12,7 @@ pathes=(
 	"$HOME/.local/bin"
 	"$HOME_WORKSPACE/bin"
 	"$HOME/go/bin"
+	"$HOME/.cargo/bin"
 )
 for path in "${pathes[@]}"; do
 	[ -d "$path" ] || continue

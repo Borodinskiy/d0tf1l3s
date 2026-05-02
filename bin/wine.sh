@@ -77,7 +77,8 @@ runwine_umu() {
 
 	export WINESERVER="$runwine wineserver"
 	export WINETRICKS_CMD="$runwine winetricks"
-	export PROTONPATH="$HOME/.local/share/Steam/compatibilitytools.d/GE-Proton"
+	export PROTONPATH="${PROTONPATH:-$HOME/.local/share/Steam/compatibilitytools.d/GE-Proton}"
+	export PROTON_USE_WINEALSA=1
 
 	case "$1" in
 		"winetricks") ${WINETRICKS_CMD} "${@:2}" ;;

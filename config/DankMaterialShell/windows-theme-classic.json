@@ -1,0 +1,22 @@
+{
+	"name": "Windows Classic",
+	"surface": "#fdffff",
+	"surfaceText": "#000000",
+	"surfaceVariant": "#fdffff",
+	"surfaceVariantText": "#000000",
+	"background": "#fdffff",
+	"backgroundText": "#ff00ff",
+	"outline": "#818181",
+	"surfaceContainer": "#c3c3c3",
+	"surfaceContainerHigh": "#d0d0d0",
+	"surfaceContainerHighest": "#fdffff",
+	"primary": "#008080",
+	"secondary": "#fdffff",
+	"primaryText": "#fdffff",
+	"primaryContainer": "#a09090",
+	"surfaceTint": "#008080",
+	"error": "#e74c3c",
+	"warning": "#ff0081",
+	"info": "#eff0f1",
+	"matugen_type": "scheme-tonal-spot"
+}

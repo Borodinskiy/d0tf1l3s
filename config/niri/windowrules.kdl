@@ -1,0 +1,57 @@
+// https://yalter.github.io/niri/Configuration:-Window-Rules
+
+// Block out two password managers from screen capture.
+window-rule {
+    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
+    match app-id=r#"^org\.gnome\.World\.Secrets$"#
+    block-out-from "screen-capture"
+    // Use this instead if you want them visible on third-party screenshot tools.
+    // block-out-from "screencast"
+}
+
+window-rule {
+    // Floating Browser profile manager
+    match app-id="librewolf" title=" - Choose User Profile$"
+    match app-id="Godot"
+    match app-id=r#"^org\.godotengine"#
+    open-floating true
+}
+
+// Similliar floating window size for some pop ups
+window-rule {
+    match app-id="nm-connection-editor"
+    match app-id=".blueman-manager-wrapped"
+    match app-id="pavucontrol"
+    match app-id="waypaper"
+    match app-id="org.freedesktop.impl.portal.desktop.kde"
+    match app-id="soffice.bin" is-floating=true
+    match app-id="soffice.bin" title="Open"
+    match app-id="soffice.bin" title="Export"
+
+    open-floating true
+    default-column-width { proportion 0.5; }
+    default-window-height { proportion 0.8; }
+}
+
+window-rule {
+    match app-id="blender" title="^(Unsaved) - Blender"
+    open-maximized true
+}
+
+// Steam notifications fix
+/-window-rule {
+    match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
+    default-floating-position x=10 y=10 relative-to="bottom-right"
+}
+
+// Block out mako notifications from screencasts
+layer-rule {
+    match namespace="^notifications$"
+    block-out-from "screen-capture"
+}
+
+// Make fuzzel semitransparent.
+layer-rule {
+    match namespace="^launcher$"
+    opacity 0.95
+}

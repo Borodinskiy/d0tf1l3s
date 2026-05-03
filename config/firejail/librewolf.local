@@ -1,1 +1,5 @@
 include net-direct.profile
+# Screen sharing
+dbus-user.talk org.freedesktop.portal.*
+whitelist ${RUNUSER}/pipewire-?
+whitelist ${RUNUSER}/wayland-?

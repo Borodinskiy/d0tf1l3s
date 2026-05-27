@@ -1,5 +1,3 @@
-spawn-at-startup "waybar"
-
 spawn-sh-at-startup "systemctl --user start idle-niri plasma-polkit-agent"
 spawn-sh-at-startup "systemctl --user start mako waybar swaybg-single"
 

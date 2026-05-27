@@ -3,7 +3,7 @@
 // https://yalter.github.io/niri/Configuration:-Introduction
 
 // Note that running niri as a session supports xdg-desktop-autostart.
-spawn-sh-at-startup "dms run"
+//spawn-sh-at-startup "systemctl --user start dms"
 
 spawn-sh-at-startup "systemctl --user start kanshi"
 
@@ -257,15 +257,15 @@ binds {
     Mod+Shift+Backspace { quit; }
     Ctrl+Alt+Delete { quit; }
 
-    Ctrl+Alt+Home { spawn-sh "kitty -e cryptomount.sh"; }
-    Ctrl+Alt+End { spawn-sh "kitty -e cryptoclose.sh"; }
+    Ctrl+Alt+Home { spawn-sh "kitty -e sudo hddb.sh -m"; }
+    Ctrl+Alt+End { spawn-sh "kitty -e sudo hddb.sh -u"; }
 }
 
 include "windowrules.kdl"
 
 // Support for external apps
-//include "integrations.kdl"
+include "integrations.kdl"
 
 // Or dankLinux overrides
-include "dms/binds.kdl"
-include "dms/windowrules.kdl"
+//include "dms/binds.kdl"
+//include "dms/windowrules.kdl"

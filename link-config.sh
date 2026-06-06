@@ -40,6 +40,7 @@ LINK_CONFIGS=(
 
 LINK_DATAS=(
 	"color-schemes/MinecraftNet.colors"
+	"color-schemes/JustDark.colors"
 )
 
 LINK_SYSTEMDS=(

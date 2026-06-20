@@ -1,0 +1,12 @@
+# Wireproxy
+if [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/wireproxy/config.conf" ]]; then
+	wp() {
+		case "$1" in
+			"on" | "start") systemctl --user start wireproxy ;;
+			"r"  | "restart") systemctl --user restart wireproxy ;;
+			"off"| "stop") systemctl --user stop wireproxy ;;
+			"s"  | "status") systemctl --user status wireproxy ;;
+			*) echo "Usage: wp [on]start | [r]restart | [off]stop | [s]status"
+		esac
+	}
+fi

@@ -34,6 +34,7 @@ LINK_CONFIGS=(
 	"swaybg"
 	"swaylock"
 	"waybar"
+	"wireproxy"
 	"wofi"
 	"xdg-desktop-portal"
 )
@@ -50,6 +51,7 @@ LINK_SYSTEMDS=(
 	"user/niri-exit.service"
 	"user/swaybg-random.service"
 	"user/swaybg-single.service"
+	"user/wireproxy.service"
 )
 
 SHELL_SOURCES_HOME=(

@@ -1,0 +1,16 @@
+[Unit]
+Description=wireproxy service
+Documentation=https://github.com/artem-russkikh/wireproxy-awg
+After=network.target nss-lookup.target network-online.target
+
+[Service]
+StateDirectory=wireproxy
+WorkingDirectory=%h/.config/wireproxy
+ExecStart=wireproxy -c %h/.config/wireproxy/config.conf
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=1m
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=multi-user.target

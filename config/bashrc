@@ -83,3 +83,5 @@ export PROMPT_COMMAND="precmd"
 alias clear="export __NEW_LINE_BEFORE_PROMPT=0 && clear"
 
 configure_prompt
+
+source "$HOME_WORKSPACE/config/bashintegrations"

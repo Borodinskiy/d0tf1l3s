@@ -125,7 +125,12 @@
           "deb.sagernet.org",
           "download.vscodium.com",
           "golang.org",
-          "files.holarse-linuxgaming.de"
+          "files.holarse-linuxgaming.de",
+          "beamng.com",
+          "go.beamng.com",
+          "forum.beamng.com",
+          "api.beamng.com",
+          "cloude.beamng.com"
         ],
         "outbound": "out-remote"
       },
@@ -141,27 +146,15 @@
       },
       { // OS processes
         "inbound": "in-tun",
-        "process_name": [
-          "Discord.exe",
-          ".Discord-wrappe",
-          ".Discord-wrapped",
-          "/app/discord/Discord",
-          "com.discordapp.Discord",
-          "Discord",
-          "songrec.exe",
+        "process_path_regex": [
+          "discord",
           "songrec",
-          "librewolf.exe",
           "librewolf",
-          "telegram.exe",
-          "Telegram",
-          "steam.exe",
-          "steamwebhelper.exe",
-          "streaming_client.exe",
-          "SteamService.exe",
+          "telegram",
           "steam",
           "steamwebhelper",
           "streaming_client",
-          "SteamService"
+          "steamservice"
         ],
         "outbound": "out-remote"
       }

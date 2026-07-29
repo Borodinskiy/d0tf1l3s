@@ -6,7 +6,9 @@ if [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/wireproxy/config.conf" ]]; then
 			"r"  | "restart") systemctl --user restart wireproxy ;;
 			"off"| "stop") systemctl --user stop wireproxy ;;
 			"s"  | "status") systemctl --user status wireproxy ;;
-			*) echo "Usage: wp [on]start | [r]restart | [off]stop | [s]status"
+			"l"  | "log") journalctl -b --user -u wireproxy ;;
+			"lf" | "logfollow") journalctl -fb --user -u wireproxy ;;
+			*) echo "Usage: wp [on]start | [r]restart | [off]stop | [s]status | [l]log | [lf]logfollow"
 		esac
 	}
 fi

@@ -7,7 +7,6 @@ After=network.target nss-lookup.target network-online.target
 StateDirectory=wireproxy
 WorkingDirectory=%h/.config/wireproxy
 ExecStart=wireproxy -c %h/.config/wireproxy/config.conf
-ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=1m
 LimitNOFILE=infinity

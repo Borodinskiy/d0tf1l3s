@@ -2,8 +2,11 @@
 
 # Fixes for some operations with "*" operand (like /directory/*.exe)
 shopt -s nullglob
+# Look for unbound variables
+set -u
 
 DESKTOPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+ICONDIR="${XDG_DATA_HOME:-$HOME/.local/share}/icons"
 
 # Name for script that runs program
 RUNSCRIPT="run.sh"
@@ -11,6 +14,7 @@ RUNSCRIPT="run.sh"
 # Array of root directories where program categories located
 ROOTS=(
 	"$HOME/programs"
+	"$HOME/programs/win"
 	"$HOME/myfiles/programs"
 	"/portablehub/Programs"
 	"/gamehub/Programs"
@@ -22,10 +26,26 @@ ROOTS=(
 # Subdirectories in roots with programs
 CATEGORIES=(
 	"Development" "dev"
-	"Game" "Utility"
-	"games" "game"
-	"utility" "util"
+	"Game" "games" "game"
+	"Utility" "utility" "util"
 )
+
+# Subdirectories in roots with appimages
+APPIMAGES=(
+	"appimage"
+)
+
+# Check user's input
+check_arguments() {
+	case "$1" in
+		"--help" | "-h")
+			echo "Usage: $0"
+			echo "	--clean	firstly remove all previously created [$RUNSCRIPT]* shortcuts"
+			exit 0
+			;;
+		"--clean") rm -f "$DESKTOPDIR/[$RUNSCRIPT] "* ;;
+	esac
+}
 
 # Function for desktop file creation
 # TODO: can we make arguments by --flag? So we don't need to remember sequense
@@ -52,12 +72,10 @@ create_desktop() {
 	# Last have the greatest priority
 	# [ -f "" ] && action - small version of if then
 	icon="application-x-executable"
-	[ -f "icon.ico" ] && icon="icon.ico"
-	[ -f "icon.png" ] && icon="icon.png"
-	[ -f "icon.svg" ] && icon="icon.svg"
-	[ -f "$name.ico" ] && icon="$name.ico"
-	[ -f "$name.png" ] && icon="$name.png"
-	[ -f "$name.svg" ] && icon="$name.svg"
+	for ext in "ico" "png" "svg"; do
+		[ -f "icon.$ext" ] && icon="icon.$ext"
+		[ -f "$name.$ext" ] && icon="$name.$ext"
+	done
 
 	# Creating file with filename and contents of basic desktop file
 	cat << EOF > "$tempdir/$filename"
@@ -78,39 +96,48 @@ Icon=edit-clear-all-symbolic
 Exec=rm -f "$DESKTOPDIR/$filename"
 EOF
 
-	chmod +x "$tempdir/$filename"
-
-	# Checking if previously created desktop file have differences with new one
-	if [ -f "$DESKTOPDIR/$filename" ] &&
-	[ \
-		"$(sha256sum "$DESKTOPDIR/$filename" | awk '{print $1}')" == \
-		"$(sha256sum "$tempdir/$filename"    | awk '{print $1}')" \
-	]
-	then
-		# Old file simmiliar to new, removing new from tempdir
-		printf "=] "
-		rm -f "$tempdir/$filename"
-	else
-		# Replacing old file. Sleep check allows desktop environment to update application menus
-		printf "+] "
-		rm -f "$DESKTOPDIR/$filename"
-		sleep 0.5s
-		mv "$tempdir/$filename" "$DESKTOPDIR/$filename"
-	fi
+	printf " ] "
+	install --compare -m755 "$tempdir/$filename" "$DESKTOPDIR/$filename"
+	rm -f "$tempdir/$filename"
 
 	# Finally printing what we used for desktop file
 	echo "$name: $executable & $icon"
 }
 
-case "$1" in
-	"--help" | "-h")
-		echo "Usage: $0"
-		echo "	--clean	firstly remove all previously created [$RUNSCRIPT]* shortcuts" \
-		"$0" "$RUNSCRIPT"
-		exit 0
-		;;
-	"--clean") rm -f "$DESKTOPDIR/[$RUNSCRIPT] "* ;;
-esac
+integrate_appimage() {
+	# Appimage executable
+	app="$(realpath $1)"
+	# Mounting appimage in background and saving mount path
+	read -r mount_path < <($app --appimage-mount)
+	# For future background process termination
+	app_pid=$!
+
+	# Copy desktop files and replace Exec= line with path to appimage
+	find "$mount_path" -maxdepth 1 -name "*.desktop" \
+		| while read -r file
+	do
+		desktopfile="$(realpath "$file")"
+		install --compare -m700 "$desktopfile" "/tmp/desktopfile.desktop"
+		sed -ie "/^Exec=/s|=.*$|=$app %u|" "/tmp/desktopfile.desktop"
+		install --compare -m755 "/tmp/desktopfile.desktop" "$DESKTOPDIR/$(basename "$file")"
+		rm "/tmp/desktopfile.desktop"
+	done
+
+	# Find icon (svg have priority)
+	# TODO: search for other formats and fix priotity picking logic
+	find "$mount_path" -maxdepth 1 -name "*.svg" -or -name "*.png" \
+		| sort --reverse | while read -r file
+	do
+		install --compare -m 644 "$(realpath "$file")" "$ICONDIR/"
+		break
+	done
+
+	# Terminating background process
+	kill -SIGINT "$app_pid"
+	wait "$app_pid"
+}
+
+[ -v 1 ] && check_arguments "$@"
 
 for root in "${ROOTS[@]}"; do
 	# Skip directory if couldn't cd in it
@@ -135,6 +162,15 @@ for root in "${ROOTS[@]}"; do
 			else
 				echo "!] $name: no $RUNSCRIPT"
 			fi
+		done
+	done
+
+	for category in "${APPIMAGES[@]}"; do
+		cd "$root/$category" &> /dev/null || continue
+		echo "\`- $category:"
+		for appimage in "$root/$category"/*; do
+			echo "  \`- [ ] $(basename "$appimage")"
+			integrate_appimage $appimage
 		done
 	done
 done

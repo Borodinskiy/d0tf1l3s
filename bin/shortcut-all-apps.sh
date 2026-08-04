@@ -118,7 +118,10 @@ integrate_appimage() {
 	do
 		desktopfile="$(realpath "$file")"
 		install --compare -m700 "$desktopfile" "/tmp/desktopfile.desktop"
-		sed -ie "/^Exec=/s|=.*$|=$app %u|" "/tmp/desktopfile.desktop"
+		sed -i \
+			-e "/^Exec=/s|=.*$|=$app %u|" \
+			-e "/^TryExec=/s|=.*$|=$app|" \
+			"/tmp/desktopfile.desktop"
 		install --compare -m755 "/tmp/desktopfile.desktop" "$DESKTOPDIR/$(basename "$file")"
 		rm "/tmp/desktopfile.desktop"
 	done

@@ -77,15 +77,33 @@ create_desktop() {
 		[ -f "$name.$ext" ] && icon="$name.$ext"
 	done
 
-	# Creating file with filename and contents of basic desktop file
-	cat << EOF > "$tempdir/$filename"
+	local have_desktops=0
+	for file in *.desktop; do
+		have_desktops=1
+		desktopfile="$(realpath "$file")"
+		install --compare -m700 "$desktopfile" "/tmp/desktopfile.desktop"
+		sed -i \
+			-e "/^Exec=/s|=.*$|=\"$directory/$executable\" %u|" \
+			-e "/^TryExec=/s|=.*$|=$directory/$executable|" \
+			-e "/^Icon=/s|=.*$|=$directory/$icon|" \
+			-e "/^Path=/s|=.*$|=$directory|" \
+			"/tmp/desktopfile.desktop"
+		if [ -z "$(grep 'Path=' '/tmp/desktopfile.desktop')"]; then
+			echo "Path=$directory" >> '/tmp/desktopfile.desktop'
+		fi
+		install --compare -m755 "/tmp/desktopfile.desktop" "$DESKTOPDIR/[$executable] $(basename "$file")"
+		rm "/tmp/desktopfile.desktop"
+	done
+	if [ "$have_desktops" == 0 ]; then
+		# Creating file with filename and contents of basic desktop file
+		cat << EOF > "$tempdir/$filename"
 [Desktop Entry]
 Type=Application
 Categories=$category
 Name=$name
 Icon=$directory/$icon
 Path=$directory
-Exec="$directory/$executable"
+Exec="$directory/$executable" %u
 Terminal=false
 StartupNotify=true
 Actions=DeleteShortcut
@@ -95,13 +113,12 @@ Name[ru_RU]=Удалить этот ярлык
 Icon=edit-clear-all-symbolic
 Exec=rm -f "$DESKTOPDIR/$filename"
 EOF
-
-	printf " ] "
-	install --compare -m755 "$tempdir/$filename" "$DESKTOPDIR/$filename"
-	rm -f "$tempdir/$filename"
+		install --compare -m755 "$tempdir/$filename" "$DESKTOPDIR/$filename"
+		rm -f "$tempdir/$filename"
+	fi
 
 	# Finally printing what we used for desktop file
-	echo "$name: $executable & $icon"
+	echo " ] $name: $executable & $icon"
 }
 
 integrate_appimage() {
@@ -119,7 +136,7 @@ integrate_appimage() {
 		desktopfile="$(realpath "$file")"
 		install --compare -m700 "$desktopfile" "/tmp/desktopfile.desktop"
 		sed -i \
-			-e "/^Exec=/s|=.*$|=$app %u|" \
+			-e "/^Exec=/s|=.*$|=\"$app\" %u|" \
 			-e "/^TryExec=/s|=.*$|=$app|" \
 			"/tmp/desktopfile.desktop"
 		install --compare -m755 "/tmp/desktopfile.desktop" "$DESKTOPDIR/$(basename "$file")"

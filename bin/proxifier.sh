@@ -20,9 +20,9 @@ case "$ROUTING_TYPE" in
 	"amnezia")
 		ETC_CONFIGS=(
 			"config.json"
+			"inbound-proxy.json"
 			"outbound-direct.json"
 			"outbound-awg.json"
-			"proxy-server.json"
 			"tun-linux.json"
 		)
 		;;

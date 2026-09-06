@@ -130,7 +130,13 @@
           "go.beamng.com",
           "forum.beamng.com",
           "api.beamng.com",
-          "cloude.beamng.com"
+          "cloude.beamng.com",
+          "mod.io",
+          "api.mod.io",
+          "download.mod.io",
+          "docs.mod.io",
+          "modcdn.io",
+          "assets.modcdn.io"
         ],
         "outbound": "out-remote"
       },
@@ -146,15 +152,27 @@
       },
       { // OS processes
         "inbound": "in-tun",
-        "process_path_regex": [
-          "discord",
+        "process_name": [
+          "Discord.exe",
+          ".Discord-wrappe",
+          ".Discord-wrapped",
+          "/app/discord/Discord",
+          "com.discordapp.Discord",
+          "Discord",
+          "songrec.exe",
           "songrec",
+          "librewolf.exe",
           "librewolf",
-          "telegram",
+          "telegram.exe",
+          "Telegram",
+          "steam.exe",
+          "steamwebhelper.exe",
+          "streaming_client.exe",
+          "SteamService.exe",
           "steam",
           "steamwebhelper",
           "streaming_client",
-          "steamservice"
+          "SteamService"
         ],
         "outbound": "out-remote"
       }

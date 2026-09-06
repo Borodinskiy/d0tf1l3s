@@ -5,10 +5,14 @@ shopt -s nullglob
 # Look for unbound variables
 set -u
 
-DESKTOPDIR="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
-ICONDIR="${XDG_DATA_HOME:-$HOME/.local/share}/icons"
+TMP="$(mktemp -d)"
+XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME:?}/.local/share}"
+DESKTOPDIR="$XDG_DATA_HOME/applications"
+ICONDIR="$XDG_DATA_HOME/icons"
+# Manage shortcuts for programs located in root directories
+ALLOW_ROOT=0
 
-# Name for script that runs program
+# Default name for script inside program directory that runs it
 RUNSCRIPT="run.sh"
 
 # Array of root directories where program categories located
@@ -17,10 +21,7 @@ ROOTS=(
 	"$HOME/programs/win"
 	"$HOME/myfiles/programs"
 	"/portablehub/Programs"
-	"/gamehub/Programs"
-	"/run/media/$USER/drive_d/programs"
-	"/run/media/$USER/drive_g/programs"
-	"/run/media/$USER/drive_p"
+	"/gamehub/programs"
 )
 
 # Subdirectories in roots with programs
@@ -40,10 +41,12 @@ check_arguments() {
 	case "$1" in
 		"--help" | "-h")
 			echo "Usage: $0"
-			echo "	--clean	firstly remove all previously created [$RUNSCRIPT]* shortcuts"
+			echo "	--clean\t\tfirstly remove all previously created [$RUNSCRIPT]* shortcuts"
+			echo "	--allow-root\t\tmanage shortcuts for programs located in root directories"
 			exit 0
 			;;
 		"--clean") rm -f "$DESKTOPDIR/[$RUNSCRIPT] "* ;;
+		"--allow-root") ALLOW_ROOT=1; echo "TODO"; exit ;;
 	esac
 }
 
@@ -55,48 +58,51 @@ create_desktop() {
 	executable="$3"
 	category="$4"
 
-	# If no success when do a cd to directory, then exit with error
 	cd "$directory" || exit 1
 
-	# Location of desktop file
+	# Name and temporary location of desktop file
 	filename="[$executable] $name.desktop"
-	tempdir="/tmp"
 
-	# Changing some categories to desktop file format
+	# Getting right category name for desktop file from directory name
 	case "$category" in
 		"games" | "game") category="Game" ;;
 		"utility" | "util") category="Utility" ;;
 		"dev") category="Development" ;;
 	esac
 
-	# Last have the greatest priority
+	# First have the greatest priority
 	# [ -f "" ] && action - small version of if then
 	icon="application-x-executable"
-	for ext in "ico" "png" "svg"; do
-		[ -f "icon.$ext" ] && icon="icon.$ext"
-		[ -f "$name.$ext" ] && icon="$name.$ext"
+	for ext in "svg" "png" "ico"; do
+		[ -f "$name.$ext" ] && icon="$name.$ext" && break
+		[ -f "icon.$ext" ] && icon="icon.$ext" && break
 	done
 
+	install -m600 "/dev/null" "$TMP/$filename"
+
+	# Check for premade desktop file inside directory and replace some of it's parameters
 	local have_desktops=0
 	for file in *.desktop; do
+		# Changed if we ever entered this for loop
 		have_desktops=1
+
 		desktopfile="$(realpath "$file")"
-		install --compare -m700 "$desktopfile" "/tmp/desktopfile.desktop"
+		install --compare -m600 "$desktopfile" "$TMP/$filename"
 		sed -i \
 			-e "/^Exec=/s|=.*$|=\"$directory/$executable\" %u|" \
 			-e "/^TryExec=/s|=.*$|=$directory/$executable|" \
 			-e "/^Icon=/s|=.*$|=$directory/$icon|" \
 			-e "/^Path=/s|=.*$|=$directory|" \
-			"/tmp/desktopfile.desktop"
-		if [ -z "$(grep 'Path=' '/tmp/desktopfile.desktop')"]; then
-			echo "Path=$directory" >> '/tmp/desktopfile.desktop'
+			"$TMP/$filename"
+		if [ -z "$(grep 'Path=' "$TMP/$filename")"]; then
+			echo "Path=$directory" >> "$TMP/$filename"
 		fi
-		install --compare -m755 "/tmp/desktopfile.desktop" "$DESKTOPDIR/[$executable] $(basename "$file")"
-		rm "/tmp/desktopfile.desktop"
+		install --compare -m644 "$TMP/$filename" "$DESKTOPDIR/[$executable] $(basename "$file")"
+		rm "$TMP/$filename"
 	done
 	if [ "$have_desktops" == 0 ]; then
 		# Creating file with filename and contents of basic desktop file
-		cat << EOF > "$tempdir/$filename"
+		cat << EOF > "$TMP/$filename"
 [Desktop Entry]
 Type=Application
 Categories=$category
@@ -113,8 +119,8 @@ Name[ru_RU]=Удалить этот ярлык
 Icon=edit-clear-all-symbolic
 Exec=rm -f "$DESKTOPDIR/$filename"
 EOF
-		install --compare -m755 "$tempdir/$filename" "$DESKTOPDIR/$filename"
-		rm -f "$tempdir/$filename"
+		install --compare -m644 "$TMP/$filename" "$DESKTOPDIR/$filename"
+		rm -f "$TMP/$filename"
 	fi
 
 	# Finally printing what we used for desktop file
@@ -134,12 +140,12 @@ integrate_appimage() {
 		| while read -r file
 	do
 		desktopfile="$(realpath "$file")"
-		install --compare -m700 "$desktopfile" "/tmp/desktopfile.desktop"
+		install --compare -m600 "$desktopfile" "/tmp/desktopfile.desktop"
 		sed -i \
 			-e "/^Exec=/s|=.*$|=\"$app\" %u|" \
 			-e "/^TryExec=/s|=.*$|=$app|" \
 			"/tmp/desktopfile.desktop"
-		install --compare -m755 "/tmp/desktopfile.desktop" "$DESKTOPDIR/$(basename "$file")"
+		install --compare -m644 "/tmp/desktopfile.desktop" "$DESKTOPDIR/$(basename "$file")"
 		rm "/tmp/desktopfile.desktop"
 	done
 
@@ -171,16 +177,14 @@ for root in "${ROOTS[@]}"; do
 		for path in "$root/$category"/*; do
 			[ -f "$path" ] && continue
 			name="$(basename "$path")"
-			printf "  \`- ["
 
 			if [ -f "$path/$RUNSCRIPT" ]; then
+				printf "  \`- ["
 				create_desktop \
 					"$name" \
 					"$path" \
 					"$RUNSCRIPT" \
 					"$category"
-			else
-				echo "!] $name: no $RUNSCRIPT"
 			fi
 		done
 	done
@@ -194,3 +198,5 @@ for root in "${ROOTS[@]}"; do
 		done
 	done
 done
+
+rm -r "$TMP"
